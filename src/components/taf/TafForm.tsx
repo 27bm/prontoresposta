@@ -1,13 +1,13 @@
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TafFormData, Gender, AgeRange } from '@/types/taf';
+import { TafFormData, Gender, AgeRange, TafResult } from '@/types/taf';
+import { calculateTafResult } from '@/utils/tafCalculator';
+import { TafResultCard } from '@/components/taf/TafResult';
 
 interface TafFormProps {
-  onSubmit: (data: TafFormData) => void;
   defaultValues?: Partial<TafFormData>;
 }
 
@@ -19,29 +19,38 @@ const runningOptions = [
   1850, 1900, 1950, 2000, 2050, 2100, 2150, 2200, 2250, 2300, 2350, 2400, 2450, 2500, 2550
 ];
 
-export function TafForm({ onSubmit, defaultValues }: TafFormProps) {
+export function TafForm({ defaultValues }: TafFormProps) {
   const [gender, setGender] = useState<Gender>(defaultValues?.gender || 'male');
   const [ageRange, setAgeRange] = useState<AgeRange>(defaultValues?.ageRange || 'up_to_27');
   const [barPullups, setBarPullups] = useState<number | undefined>(defaultValues?.barPullups);
   const [barIsometry, setBarIsometry] = useState<number | undefined>(defaultValues?.barIsometry);
   const [situps, setSitups] = useState<number>(defaultValues?.situps || 0);
   const [runningDistance, setRunningDistance] = useState<number>(defaultValues?.runningDistance || 0);
+  const [result, setResult] = useState<TafResult | null>(null);
   
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    onSubmit({
-      gender,
-      ageRange,
-      barPullups: gender === 'male' ? barPullups : undefined,
-      barIsometry: gender === 'female' ? barIsometry : undefined,
-      situps,
-      runningDistance
-    });
-  };
+  // Recalcula o resultado sempre que um campo é alterado
+  useEffect(() => {
+    if ((gender === 'male' && barPullups && situps && runningDistance) || 
+        (gender === 'female' && barIsometry && situps && runningDistance)) {
+      
+      const data: TafFormData = {
+        gender,
+        ageRange,
+        barPullups: gender === 'male' ? barPullups : undefined,
+        barIsometry: gender === 'female' ? barIsometry : undefined,
+        situps,
+        runningDistance
+      };
+      
+      const calculatedResult = calculateTafResult(data);
+      setResult(calculatedResult);
+    } else {
+      setResult(null);
+    }
+  }, [gender, ageRange, barPullups, barIsometry, situps, runningDistance]);
   
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
       <div className="space-y-4">
         <Label>Sexo</Label>
         <RadioGroup 
@@ -121,7 +130,6 @@ export function TafForm({ onSubmit, defaultValues }: TafFormProps) {
         <Select 
           value={situps?.toString() || ''}
           onValueChange={(val) => setSitups(parseInt(val))}
-          required
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecione o número de repetições" />
@@ -141,7 +149,6 @@ export function TafForm({ onSubmit, defaultValues }: TafFormProps) {
         <Select 
           value={runningDistance?.toString() || ''}
           onValueChange={(val) => setRunningDistance(parseInt(val))}
-          required
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecione a distância em metros" />
@@ -156,9 +163,12 @@ export function TafForm({ onSubmit, defaultValues }: TafFormProps) {
         </Select>
       </div>
       
-      <Button type="submit" className="w-full bg-police-blue hover:bg-police-lightBlue">
-        Calcular Resultado
-      </Button>
-    </form>
+      {result && (
+        <div className="mt-8 border-t pt-6">
+          <h3 className="text-xl font-bold mb-4">Resultado</h3>
+          <TafResultCard result={result} />
+        </div>
+      )}
+    </div>
   );
 }

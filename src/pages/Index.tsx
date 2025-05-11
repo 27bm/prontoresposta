@@ -45,19 +45,18 @@ const Index = () => {
     <div 
       className="min-h-screen flex flex-col -mt-4 -mx-4"
       style={{
-        backgroundImage: 'url(https://i.ibb.co/ZRVky5CT/Pronto-Resposta3.png)',
+        backgroundImage: 'url(https://i.ibb.co/ZRVky5C/Pronto-Resposta3.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed'
       }}
-    >
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-      
+    >      
       {/* Menu de navegação rápida */}
       <div className="relative z-10 flex-grow px-4 pb-8 pt-20 flex flex-col justify-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {menuItems.map((item) => (
-            <Card key={item.path} className="overflow-hidden hover:shadow-lg transition-shadow bg-white bg-opacity-90 backdrop-blur-sm">
+            <Card key={item.path} className="overflow-hidden hover:shadow-lg transition-shadow bg-white">
               <CardContent className="p-0">
                 <Button
                   variant="ghost"
