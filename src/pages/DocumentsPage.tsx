@@ -2,12 +2,12 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { DocumentCard } from '@/components/documents/DocumentCard';
 import { DocumentForm } from '@/components/documents/DocumentForm';
 import { useDocuments } from '@/contexts/DocumentContext';
 import { Document as DocumentType } from '@/types/models';
-import { PlusCircle, Search } from 'lucide-react';
+import { PlusCircle, Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export function DocumentsPage() {
@@ -16,6 +16,7 @@ export function DocumentsPage() {
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentDocument, setCurrentDocument] = useState<DocumentType | undefined>(undefined);
+  const [viewingDocument, setViewingDocument] = useState<DocumentType | null>(null);
   
   // Filtrar documentos com base na pesquisa
   const filteredDocuments = useMemo(() => {
@@ -40,6 +41,10 @@ export function DocumentsPage() {
   const handleEditClick = (document: DocumentType) => {
     setCurrentDocument(document);
     setIsFormOpen(true);
+  };
+
+  const handleViewDocument = (document: DocumentType) => {
+    setViewingDocument(document);
   };
   
   const handleFormSave = (document: Omit<DocumentType, 'id' | 'createdAt' | 'updatedAt'>) => {
@@ -99,7 +104,7 @@ export function DocumentsPage() {
                 <DocumentCard
                   key={document.id}
                   document={document}
-                  onEdit={handleEditClick}
+                  onClick={handleViewDocument}
                 />
               ))}
             </div>
@@ -123,6 +128,7 @@ export function DocumentsPage() {
         </TabsContent>
       </Tabs>
       
+      {/* Dialog para adicionar/editar documento */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
@@ -135,6 +141,40 @@ export function DocumentsPage() {
             onSave={handleFormSave}
             onCancel={() => setIsFormOpen(false)}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para visualizar o documento completo */}
+      <Dialog open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
+        <DialogContent className="sm:max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>{viewingDocument?.title}</span>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setViewingDocument(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+            {viewingDocument && (
+              <Badge className="w-fit">
+                {(() => {
+                  switch (viewingDocument.type) {
+                    case 'bulletin': return 'Boletim';
+                    case 'procedure': return 'Procedimento';
+                    case 'instruction': return 'Instrução';
+                    case 'traffic': return 'Trânsito';
+                    default: return 'Outro';
+                  }
+                })()}
+              </Badge>
+            )}
+          </DialogHeader>
+          <DialogDescription className="whitespace-pre-wrap">
+            {viewingDocument?.content}
+          </DialogDescription>
         </DialogContent>
       </Dialog>
     </div>

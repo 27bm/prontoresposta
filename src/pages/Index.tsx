@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, FileText, Calendar, Smartphone, Calculator } from 'lucide-react';
+import { User, FileText, Calendar, Smartphone, Calculator, Skull } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -39,7 +39,22 @@ const Index = () => {
       path: '/taf',
       color: 'bg-cyan-100 text-cyan-600',
     },
+    {
+      title: 'BM GPT',
+      icon: Skull,
+      path: 'http://wa.me/555123990766',
+      color: 'bg-gray-100 text-gray-600',
+      isExternal: true,
+    },
   ];
+
+  const handleNavigation = (item: typeof menuItems[0]) => {
+    if (item.isExternal) {
+      window.open(item.path, '_blank');
+    } else {
+      navigate(item.path);
+    }
+  };
 
   return (
     <div 
@@ -61,7 +76,7 @@ const Index = () => {
                 <Button
                   variant="ghost"
                   className="w-full h-full flex items-center text-left p-6"
-                  onClick={() => navigate(item.path)}
+                  onClick={() => handleNavigation(item)}
                 >
                   <div className={`mr-4 p-3 rounded-lg ${item.color}`}>
                     <item.icon className="h-8 w-8" />

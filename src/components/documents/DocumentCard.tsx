@@ -2,18 +2,14 @@
 import React from 'react';
 import { Document } from '@/types/models';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 interface DocumentCardProps {
   document: Document;
-  onEdit: (document: Document) => void;
+  onClick: (document: Document) => void;
 }
 
-export function DocumentCard({ document, onEdit }: DocumentCardProps) {
+export function DocumentCard({ document, onClick }: DocumentCardProps) {
   // Função para determinar a cor do badge com base no tipo
   const getBadgeVariant = (type: Document['type']) => {
     switch (type) {
@@ -46,14 +42,11 @@ export function DocumentCard({ document, onEdit }: DocumentCardProps) {
     }
   };
 
-  // Calcular tempo desde a criação
-  const timeAgo = formatDistanceToNow(new Date(document.createdAt), {
-    addSuffix: true,
-    locale: ptBR,
-  });
-
   return (
-    <Card className="mb-3 overflow-hidden border-l-4 border-l-police-blue">
+    <Card 
+      className="mb-3 overflow-hidden border-l-4 border-l-police-blue cursor-pointer hover:shadow-md transition-shadow" 
+      onClick={() => onClick(document)}
+    >
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           <div className="w-full">
@@ -64,26 +57,10 @@ export function DocumentCard({ document, onEdit }: DocumentCardProps) {
               </Badge>
             </div>
             
-            <p className="text-sm text-gray-500 mb-2">
-              Atualizado {timeAgo}
-            </p>
-            
             <p className="text-sm line-clamp-2 mb-4">
               {document.content}
             </p>
           </div>
-        </div>
-        
-        <div className="flex justify-end items-center mt-4 pt-2 border-t border-gray-100">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-blue-600" 
-            onClick={() => onEdit(document)}
-          >
-            <Edit className="h-4 w-4 mr-1" />
-            Editar
-          </Button>
         </div>
       </CardContent>
     </Card>

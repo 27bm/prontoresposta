@@ -8,7 +8,8 @@ import {
   Calendar, 
   Smartphone,
   Home,
-  Activity
+  Activity,
+  Skull
 } from 'lucide-react';
 
 const navItems = [
@@ -18,10 +19,18 @@ const navItems = [
   { path: '/schedule', title: 'Agenda', icon: Calendar },
   { path: '/shortcuts', title: 'Aplicativos', icon: Smartphone },
   { path: '/taf', title: 'TAF', icon: Activity },
+  { path: 'http://wa.me/555123990766', title: 'BM GPT', icon: Skull, external: true },
 ];
 
 export function Navbar() {
   const location = useLocation();
+  
+  const handleNavigation = (item: typeof navItems[0], e: React.MouseEvent) => {
+    if (item.external) {
+      e.preventDefault();
+      window.open(item.path, '_blank');
+    }
+  };
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900 to-police-blue border-t border-t-white/10 z-10">
@@ -32,10 +41,11 @@ export function Navbar() {
             to={item.path}
             className={cn(
               "flex flex-col items-center py-2 px-3 flex-1 text-center transition-all",
-              location.pathname === item.path
+              location.pathname === item.path && !item.external
                 ? "text-police-gold"
                 : "text-white/70 hover:text-white"
             )}
+            onClick={(e) => handleNavigation(item, e)}
           >
             <item.icon className="h-6 w-6 mb-1" />
             <span className="text-xs font-medium">{item.title}</span>
