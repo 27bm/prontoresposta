@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   User, 
-  MapPin, 
   FileText, 
   Calendar, 
   Smartphone,
@@ -15,7 +14,6 @@ import {
 const navItems = [
   { path: '/', title: 'Início', icon: Home },
   { path: '/suspects', title: 'Suspeitos', icon: User },
-  { path: '/map', title: 'Mapa', icon: MapPin },
   { path: '/documents', title: 'Documentos', icon: FileText },
   { path: '/schedule', title: 'Agenda', icon: Calendar },
   { path: '/shortcuts', title: 'Aplicativos', icon: Smartphone },

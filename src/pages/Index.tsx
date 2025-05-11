@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, MapPin, FileText, Calendar, Smartphone, Calculator } from 'lucide-react';
+import { User, FileText, Calendar, Smartphone, Calculator } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -14,12 +14,6 @@ const Index = () => {
       icon: User,
       path: '/suspects',
       color: 'bg-blue-100 text-blue-600',
-    },
-    {
-      title: 'Mapa Interativo',
-      icon: MapPin,
-      path: '/map',
-      color: 'bg-green-100 text-green-600',
     },
     {
       title: 'Registros e Documentos',
