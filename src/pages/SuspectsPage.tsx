@@ -110,13 +110,15 @@ export function SuspectsPage() {
               Mudar Token
             </Button>
           )}
-          <Button
-            onClick={handleAddClick}
-            className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Adicionar Suspeito
-          </Button>
+          {listToken && ( // Only show Add Suspect button if token exists
+            <Button
+              onClick={handleAddClick}
+              className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Adicionar Suspeito
+            </Button>
+          )}
         </div>
       </div>
       
@@ -148,6 +150,14 @@ export function SuspectsPage() {
               "Informe um token para acessar uma lista de suspeitos."
             )}
           </p>
+          {listToken && !searchTerm && (
+            <Button
+              onClick={handleAddClick}
+              className="mt-4 bg-police-blue hover:bg-police-lightBlue"
+            >
+              Adicionar Suspeito
+            </Button>
+          )}
         </div>
       )}
       

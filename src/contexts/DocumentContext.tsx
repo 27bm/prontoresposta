@@ -37,6 +37,33 @@ export function DocumentProvider({ children }: { children: ReactNode }) {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Ensure storage bucket exists on mount
+  useEffect(() => {
+    const createBucketIfNeeded = async () => {
+      try {
+        // Check if bucket exists
+        const { data, error } = await supabase.storage.getBucket('documents');
+        
+        if (error && error.message.includes('not found')) {
+          // Create bucket if it doesn't exist
+          const { error: createError } = await supabase.storage.createBucket('documents', {
+            public: true
+          });
+          
+          if (createError) {
+            console.error('Error creating storage bucket:', createError);
+          }
+        } else if (error) {
+          console.error('Error checking storage bucket:', error);
+        }
+      } catch (error) {
+        console.error('Error checking/creating storage bucket:', error);
+      }
+    };
+    
+    createBucketIfNeeded();
+  }, []);
+
   // Load documents on component mount
   useEffect(() => {
     const loadDocuments = async () => {
