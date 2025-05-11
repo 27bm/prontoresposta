@@ -1,14 +1,16 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { WorkSchedule, ScaleType } from '../types/models';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth } from 'date-fns';
 import { toast } from 'sonner';
 
-// Função para calcular horas trabalhadas
-const calculateWorkHours = (schedule: WorkSchedule[]): number => {
-  return schedule.reduce((total, day) => {
-    return total + day.totalHours;
-  }, 0);
+// Função para calcular horas trabalhadas para um mês específico
+const calculateWorkHours = (schedule: WorkSchedule[], date: Date): number => {
+  return schedule
+    .filter(day => isSameMonth(new Date(day.date), date))
+    .reduce((total, day) => {
+      return total + day.totalHours;
+    }, 0);
 };
 
 // Função para determinar a carga horária mensal baseada nos dias no mês
@@ -59,33 +61,15 @@ const generateSchedule = (
       // Avança um dia
       currentDate = addDays(currentDate, 1);
     }
-  } else if (scaleType === '12x24') {
-    // Implementação da escala 12x24
+  } else if (scaleType === '12x24_48') {
+    // Implementação da escala 12x24/48
+    // Padrão: trabalha de manhã, depois à noite, depois folga 48h
     let dayCount = 0;
     let currentDate = new Date(startDate);
     
     while (currentDate.getMonth() === currentMonth) {
-      if (dayCount % 3 === 0 || dayCount % 3 === 2) {
-        newSchedule.push({
-          id: currentDate.getTime().toString(),
-          date: new Date(currentDate),
-          startTime: dayCount % 3 === 0 ? '07:00' : '19:00',
-          endTime: dayCount % 3 === 0 ? '19:00' : '07:00',
-          totalHours: 12,
-          type: 'regular'
-        });
-      }
-      
-      dayCount++;
-      currentDate = addDays(currentDate, 1);
-    }
-  } else if (scaleType === '12x48') {
-    // Implementação da escala 12x48
-    let dayCount = 0;
-    let currentDate = new Date(startDate);
-    
-    while (currentDate.getMonth() === currentMonth) {
-      if (dayCount % 3 === 0) {
+      if (dayCount % 4 === 0) {
+        // Dia de trabalho - manhã
         newSchedule.push({
           id: currentDate.getTime().toString(),
           date: new Date(currentDate),
@@ -94,7 +78,18 @@ const generateSchedule = (
           totalHours: 12,
           type: 'regular'
         });
+      } else if (dayCount % 4 === 1) {
+        // Dia de trabalho - noite
+        newSchedule.push({
+          id: currentDate.getTime().toString(),
+          date: new Date(currentDate),
+          startTime: '19:00',
+          endTime: '07:00',
+          totalHours: 12,
+          type: 'regular'
+        });
       }
+      // Os outros 2 dias são folga (48h)
       
       dayCount++;
       currentDate = addDays(currentDate, 1);
@@ -126,7 +121,8 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const [schedule, setSchedule] = useState<WorkSchedule[]>([]);
   const [loading, setLoading] = useState(false);
   
-  const totalWorkedHours = calculateWorkHours(schedule);
+  // Cálculo de horas agora é baseado no mês atual
+  const totalWorkedHours = calculateWorkHours(schedule, currentDate);
   const targetHours = getMonthlyTargetHours(currentDate);
   const overtimeHours = Math.max(0, totalWorkedHours - targetHours);
   const remainingHours = Math.max(0, targetHours - totalWorkedHours);
@@ -180,8 +176,16 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const generateAutomaticSchedule = (startDate: Date, scaleType: ScaleType) => {
     setLoading(true);
     try {
-      const newSchedule = generateSchedule(startDate, scaleType);
-      setSchedule(newSchedule);
+      // Filtramos apenas os dias que não são do mês atual
+      const otherMonthsDays = schedule.filter(
+        day => !isSameMonth(new Date(day.date), startDate)
+      );
+      
+      // Geramos a nova escala para o mês atual
+      const newMonthSchedule = generateSchedule(startDate, scaleType);
+      
+      // Combinamos os dias de outros meses com os novos do mês atual
+      setSchedule([...otherMonthsDays, ...newMonthSchedule]);
       toast.success('Escala gerada com sucesso!');
     } catch (error) {
       toast.error('Erro ao gerar escala');

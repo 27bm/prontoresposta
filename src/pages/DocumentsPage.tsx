@@ -1,66 +1,48 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DocumentCard } from '@/components/documents/DocumentCard';
 import { DocumentForm } from '@/components/documents/DocumentForm';
 import { useDocuments } from '@/contexts/DocumentContext';
-import { Document } from '@/types/models';
-import { Plus } from 'lucide-react';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Document as DocumentType } from '@/types/models';
+import { PlusCircle, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 export function DocumentsPage() {
-  const { documents, addDocument, updateDocument, deleteDocument, filterDocuments, loading } = useDocuments();
+  const { documents, addDocument, updateDocument, deleteDocument, filterDocuments } = useDocuments();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentDocument, setCurrentDocument] = useState<Document | undefined>(undefined);
-  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentDocument, setCurrentDocument] = useState<DocumentType | undefined>(undefined);
   
-  // Filtrar documentos com base na aba selecionada
-  const getFilteredDocuments = () => {
-    if (activeTab === 'all') {
-      return documents;
+  // Filtrar documentos com base na pesquisa
+  const filteredDocuments = useMemo(() => {
+    let filtered = activeTab === 'all' ? documents : filterDocuments(activeTab as DocumentType['type']);
+    
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(doc => 
+        doc.title.toLowerCase().includes(query) || 
+        doc.content.toLowerCase().includes(query)
+      );
     }
     
-    return filterDocuments(activeTab as Document['type']);
-  };
+    return filtered;
+  }, [documents, activeTab, searchQuery, filterDocuments]);
   
-  // Contar documentos por tipo
-  const countDocumentsByType = (type: string) => {
-    if (type === 'all') {
-      return documents.length;
-    }
-    
-    return documents.filter(doc => doc.type === type).length;
-  };
-  
-  // Funções de manipulação do formulário
   const handleAddClick = () => {
     setCurrentDocument(undefined);
     setIsFormOpen(true);
   };
   
-  const handleEditClick = (document: Document) => {
+  const handleEditClick = (document: DocumentType) => {
     setCurrentDocument(document);
     setIsFormOpen(true);
   };
   
-  const handleDeleteClick = (id: string) => {
-    setDocumentToDelete(id);
-    setIsDeleteDialogOpen(true);
-  };
-  
-  const handleConfirmDelete = () => {
-    if (documentToDelete) {
-      deleteDocument(documentToDelete);
-      setDocumentToDelete(null);
-      setIsDeleteDialogOpen(false);
-    }
-  };
-  
-  const handleFormSave = (document: Omit<Document, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleFormSave = (document: Omit<DocumentType, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (currentDocument) {
       updateDocument(currentDocument.id, document);
     } else {
@@ -70,81 +52,77 @@ export function DocumentsPage() {
     setIsFormOpen(false);
   };
   
-  const filteredDocuments = getFilteredDocuments();
-  
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-bold">Documentos e Registros</h2>
-        <Button
-          onClick={handleAddClick}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <h1 className="text-2xl font-bold">Registros e Documentos</h1>
+        <Button 
+          onClick={handleAddClick} 
           className="bg-police-blue hover:bg-police-lightBlue"
         >
-          <Plus className="h-4 w-4 mr-1" />
-          Novo Documento
+          <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Documento
         </Button>
       </div>
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full overflow-auto flex whitespace-nowrap scrollbar-none">
-          <TabsTrigger value="all" className="flex-1">
-            Todos ({countDocumentsByType('all')})
-          </TabsTrigger>
-          <TabsTrigger value="bulletin" className="flex-1">
-            Boletins ({countDocumentsByType('bulletin')})
-          </TabsTrigger>
-          <TabsTrigger value="procedure" className="flex-1">
-            POPs ({countDocumentsByType('procedure')})
-          </TabsTrigger>
-          <TabsTrigger value="instruction" className="flex-1">
-            NIs ({countDocumentsByType('instruction')})
-          </TabsTrigger>
-          <TabsTrigger value="traffic" className="flex-1">
-            Trânsito ({countDocumentsByType('traffic')})
-          </TabsTrigger>
+      {/* Barra de pesquisa */}
+      <div className="relative">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+        <Input
+          type="search"
+          placeholder="Pesquisar por título ou conteúdo..."
+          className="pl-9"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+      
+      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid grid-cols-6 mb-4">
+          <TabsTrigger value="all">Todos</TabsTrigger>
+          <TabsTrigger value="bulletin">Boletins</TabsTrigger>
+          <TabsTrigger value="procedure">POPs</TabsTrigger>
+          <TabsTrigger value="instruction">NIs</TabsTrigger>
+          <TabsTrigger value="traffic">Trânsito</TabsTrigger>
+          <TabsTrigger value="other">Outros</TabsTrigger>
         </TabsList>
         
-        <TabsContent value={activeTab} className="mt-4">
-          {loading ? (
-            <div className="flex justify-center p-8">
-              <div className="animate-pulse-slow text-center">
-                <p className="text-gray-500">Carregando...</p>
-              </div>
-            </div>
-          ) : filteredDocuments.length > 0 ? (
-            <div className="space-y-3">
-              {filteredDocuments.map((document) => (
+        <TabsContent value={activeTab} className="space-y-4">
+          {filteredDocuments.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredDocuments.map(document => (
                 <DocumentCard
                   key={document.id}
                   document={document}
                   onEdit={handleEditClick}
-                  onDelete={handleDeleteClick}
+                  onDelete={deleteDocument}
                 />
               ))}
             </div>
           ) : (
             <div className="text-center py-10">
-              <p className="text-gray-500">
-                Nenhum documento encontrado
-                {activeTab !== 'all' ? " para esta categoria" : ""}
-              </p>
-              <Button
-                onClick={handleAddClick}
-                className="mt-4 bg-police-blue hover:bg-police-lightBlue"
-              >
-                Adicionar Documento
-              </Button>
+              {searchQuery ? (
+                <p className="text-gray-500">Nenhum documento encontrado com os critérios da pesquisa</p>
+              ) : (
+                <>
+                  <p className="text-gray-500">Nenhum documento encontrado nesta categoria</p>
+                  <Button
+                    onClick={handleAddClick}
+                    className="mt-4 bg-police-blue hover:bg-police-lightBlue"
+                  >
+                    Adicionar Documento
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </TabsContent>
       </Tabs>
       
-      {/* Modal do formulário */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {currentDocument ? 'Editar Documento' : 'Adicionar Novo Documento'}
+              {currentDocument ? 'Editar Documento' : 'Adicionar Documento'}
             </DialogTitle>
           </DialogHeader>
           <DocumentForm
@@ -154,24 +132,6 @@ export function DocumentsPage() {
           />
         </DialogContent>
       </Dialog>
-      
-      {/* Diálogo de confirmação de exclusão */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleConfirmDelete}>
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

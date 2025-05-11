@@ -5,9 +5,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { MapMarkerForm } from '@/components/map/MapMarkerForm';
 import { useMapMarkers } from '@/contexts/MapContext';
 import { MapMarker } from '@/types/models';
-import { Map, Pin, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Card, CardContent } from '@/components/ui/card';
+import GoogleMapComponent from '@/components/map/GoogleMapComponent';
 
 export function MapPage() {
   const { markers, addMarker, updateMarker, deleteMarker, loading } = useMapMarkers();
@@ -15,55 +16,6 @@ export function MapPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentMarker, setCurrentMarker] = useState<MapMarker | undefined>(undefined);
   const [markerToDelete, setMarkerToDelete] = useState<string | null>(null);
-  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(true);
-  
-  // Mock do mapa (em uma aplicação real, isso seria um componente de mapa real)
-  // Apenas para fins de demonstração
-  const mapPlaceholder = (
-    <div className="relative bg-gray-200 aspect-video w-full rounded-lg overflow-hidden flex items-center justify-center">
-      <Map className="w-16 h-16 text-gray-400" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <p className="text-gray-600 bg-white/80 p-3 rounded-lg shadow-md">
-          O mapa interativo seria integrado aqui com a API do Google Maps
-        </p>
-      </div>
-      
-      {/* Simulação de marcadores no mapa */}
-      {markers.map((marker) => {
-        // Calculamos posições aleatórias para os marcadores na visulização de exemplo
-        const top = Math.random() * 80 + 10;
-        const left = Math.random() * 80 + 10;
-        
-        let pinColor = "text-red-500";
-        
-        switch (marker.type) {
-          case "drug_dealing":
-            pinColor = "text-red-500";
-            break;
-          case "patrol":
-            pinColor = "text-blue-500";
-            break;
-          case "incident":
-            pinColor = "text-yellow-500";
-            break;
-          case "custom":
-            pinColor = "text-purple-500";
-            break;
-        }
-        
-        return (
-          <div
-            key={marker.id}
-            className="absolute cursor-pointer animate-pulse-slow"
-            style={{ top: `${top}%`, left: `${left}%` }}
-            onClick={() => handleEditClick(marker)}
-          >
-            <Pin className={`h-8 w-8 ${pinColor}`} />
-          </div>
-        );
-      })}
-    </div>
-  );
   
   // Funções de manipulação do formulário
   const handleAddClick = () => {
@@ -133,7 +85,7 @@ export function MapPage() {
   
   return (
     <div className="space-y-4">
-      {mapPlaceholder}
+      <GoogleMapComponent />
       
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-bold">Pontos Marcados ({markers.length})</h3>
@@ -222,36 +174,6 @@ export function MapPage() {
             onSave={handleFormSave}
             onCancel={() => setIsFormOpen(false)}
           />
-        </DialogContent>
-      </Dialog>
-      
-      {/* Diálogo de informação sobre o mapa */}
-      <Dialog open={isInfoDialogOpen} onOpenChange={setIsInfoDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Sobre o Mapa Interativo</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 pt-2">
-            <p>
-              Esta é uma representação visual do que seria o mapa interativo. Em uma aplicação real, 
-              este componente usaria a API do Google Maps para:
-            </p>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Visualizar mapa em tempo real</li>
-              <li>Adicionar marcadores com cliques no mapa</li>
-              <li>Personalizar cores e ícones dos marcadores</li>
-              <li>Salvar localização dos marcadores com precisão</li>
-            </ul>
-            <p>
-              Nesta demonstração, você pode adicionar, editar e excluir marcadores para simular 
-              a funcionalidade que estaria disponível com a integração completa do Google Maps.
-            </p>
-            <div className="flex justify-end pt-2">
-              <Button onClick={() => setIsInfoDialogOpen(false)}>
-                Entendi
-              </Button>
-            </div>
-          </div>
         </DialogContent>
       </Dialog>
       

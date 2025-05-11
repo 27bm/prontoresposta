@@ -200,8 +200,7 @@ export function SchedulePage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="12x36">Escala 12x36</SelectItem>
-                  <SelectItem value="12x24">Escala 12x24</SelectItem>
-                  <SelectItem value="12x48">Escala 12x48</SelectItem>
+                  <SelectItem value="12x24_48">Escala 12x24/48</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -209,8 +208,7 @@ export function SchedulePage() {
             <div className="pt-2">
               <p className="text-sm text-gray-500">
                 <strong>Escala 12x36:</strong> Trabalha 12 horas e folga 36 horas.<br />
-                <strong>Escala 12x24:</strong> Trabalha 12 horas, folga 24 horas e retorna por mais 12 horas.<br />
-                <strong>Escala 12x48:</strong> Trabalha 12 horas e folga 48 horas.
+                <strong>Escala 12x24/48:</strong> Trabalha 12 horas de manhã, depois 12 horas à noite, depois folga 48 horas.
               </p>
             </div>
             
