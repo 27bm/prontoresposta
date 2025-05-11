@@ -11,7 +11,7 @@ import { PlusCircle, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export function DocumentsPage() {
-  const { documents, addDocument, updateDocument, deleteDocument, filterDocuments } = useDocuments();
+  const { documents, addDocument, updateDocument, filterDocuments, loading } = useDocuments();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,14 +87,19 @@ export function DocumentsPage() {
         </TabsList>
         
         <TabsContent value={activeTab} className="space-y-4">
-          {filteredDocuments.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center p-8">
+              <div className="animate-pulse text-center">
+                <p className="text-gray-500">Carregando...</p>
+              </div>
+            </div>
+          ) : filteredDocuments.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredDocuments.map(document => (
                 <DocumentCard
                   key={document.id}
                   document={document}
                   onEdit={handleEditClick}
-                  onDelete={deleteDocument}
                 />
               ))}
             </div>

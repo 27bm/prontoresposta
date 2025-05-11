@@ -4,17 +4,16 @@ import { Document } from '@/types/models';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, Edit, Trash } from 'lucide-react';
+import { Download, Edit } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 interface DocumentCardProps {
   document: Document;
   onEdit: (document: Document) => void;
-  onDelete: (id: string) => void;
 }
 
-export function DocumentCard({ document, onEdit, onDelete }: DocumentCardProps) {
+export function DocumentCard({ document, onEdit }: DocumentCardProps) {
   // Função para determinar a cor do badge com base no tipo
   const getBadgeVariant = (type: Document['type']) => {
     switch (type) {
@@ -89,27 +88,15 @@ export function DocumentCard({ document, onEdit, onDelete }: DocumentCardProps) 
             <div></div>
           )}
           
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-blue-600" 
-              onClick={() => onEdit(document)}
-            >
-              <Edit className="h-4 w-4 mr-1" />
-              Editar
-            </Button>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-red-600" 
-              onClick={() => onDelete(document.id)}
-            >
-              <Trash className="h-4 w-4 mr-1" />
-              Excluir
-            </Button>
-          </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-blue-600" 
+            onClick={() => onEdit(document)}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Editar
+          </Button>
         </div>
       </CardContent>
     </Card>

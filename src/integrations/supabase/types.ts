@@ -9,7 +9,107 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      documents: {
+        Row: {
+          attachment_url: string | null
+          content: string
+          created_at: string
+          id: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          attachment_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      suspect_lists: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          token?: string
+        }
+        Relationships: []
+      }
+      suspects: {
+        Row: {
+          cpf: string | null
+          created_at: string
+          id: string
+          list_id: string
+          name: string
+          neighborhood: string | null
+          nickname: string | null
+          observations: string | null
+          photo_url: string | null
+          rg: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpf?: string | null
+          created_at?: string
+          id?: string
+          list_id: string
+          name: string
+          neighborhood?: string | null
+          nickname?: string | null
+          observations?: string | null
+          photo_url?: string | null
+          rg?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpf?: string | null
+          created_at?: string
+          id?: string
+          list_id?: string
+          name?: string
+          neighborhood?: string | null
+          nickname?: string | null
+          observations?: string | null
+          photo_url?: string | null
+          rg?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suspects_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "suspect_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

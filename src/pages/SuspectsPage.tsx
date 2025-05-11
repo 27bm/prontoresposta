@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -7,16 +7,35 @@ import { SuspectCard } from '@/components/suspects/SuspectCard';
 import { SuspectForm } from '@/components/suspects/SuspectForm';
 import { useSuspects } from '@/contexts/SuspectContext';
 import { Suspect } from '@/types/models';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Key } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export function SuspectsPage() {
-  const { suspects, addSuspect, updateSuspect, deleteSuspect, searchSuspects, loading } = useSuspects();
+  const { 
+    suspects, 
+    addSuspect, 
+    updateSuspect, 
+    deleteSuspect, 
+    searchSuspects, 
+    loading,
+    listToken,
+    setListToken
+  } = useSuspects();
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isTokenDialogOpen, setIsTokenDialogOpen] = useState(false);
   const [currentSuspect, setCurrentSuspect] = useState<Suspect | undefined>(undefined);
   const [suspectToDelete, setSuspectToDelete] = useState<string | null>(null);
+  const [tokenInput, setTokenInput] = useState('');
+  
+  // Show token dialog if no token is set
+  useEffect(() => {
+    if (!listToken) {
+      setIsTokenDialogOpen(true);
+    }
+  }, [listToken]);
   
   // Filtrar suspeitos com base no termo de pesquisa
   const filteredSuspects = searchSuspects(searchTerm);
@@ -55,6 +74,18 @@ export function SuspectsPage() {
     setIsFormOpen(false);
   };
   
+  const handleTokenSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (tokenInput.trim()) {
+      setListToken(tokenInput.trim());
+      setIsTokenDialogOpen(false);
+    }
+  };
+  
+  const changeToken = () => {
+    setIsTokenDialogOpen(true);
+  };
+  
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -67,18 +98,31 @@ export function SuspectsPage() {
             className="pl-9"
           />
         </div>
-        <Button
-          onClick={handleAddClick}
-          className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          Adicionar Suspeito
-        </Button>
+        <div className="flex gap-2">
+          {listToken && (
+            <Button 
+              onClick={changeToken} 
+              variant="outline" 
+              className="flex-shrink-0"
+              title="Mudar token de acesso"
+            >
+              <Key className="h-4 w-4 mr-1" />
+              Mudar Token
+            </Button>
+          )}
+          <Button
+            onClick={handleAddClick}
+            className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Adicionar Suspeito
+          </Button>
+        </div>
       </div>
       
       {loading ? (
         <div className="flex justify-center p-8">
-          <div className="animate-pulse-slow text-center">
+          <div className="animate-pulse text-center">
             <p className="text-gray-500">Carregando...</p>
           </div>
         </div>
@@ -96,8 +140,13 @@ export function SuspectsPage() {
       ) : (
         <div className="text-center py-10">
           <p className="text-gray-500">
-            Nenhum suspeito encontrado
-            {searchTerm ? " para a pesquisa: " + searchTerm : ""}
+            {listToken ? (
+              searchTerm ? 
+                "Nenhum suspeito encontrado para a pesquisa: " + searchTerm : 
+                "Nenhum suspeito cadastrado nesta lista."
+            ) : (
+              "Informe um token para acessar uma lista de suspeitos."
+            )}
           </p>
         </div>
       )}
@@ -115,6 +164,35 @@ export function SuspectsPage() {
             onSave={handleFormSave}
             onCancel={() => setIsFormOpen(false)}
           />
+        </DialogContent>
+      </Dialog>
+      
+      {/* Token Dialog */}
+      <Dialog open={isTokenDialogOpen} onOpenChange={setIsTokenDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Acesso à Lista de Suspeitos
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleTokenSubmit} className="space-y-4 p-4">
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600">
+                Informe um token para acessar uma lista de suspeitos existente. Se o token não existir, uma nova lista será criada.
+              </p>
+              <Input 
+                value={tokenInput} 
+                onChange={(e) => setTokenInput(e.target.value)} 
+                placeholder="Digite o token de acesso"
+                required
+              />
+            </div>
+            <div className="flex justify-end pt-4">
+              <Button type="submit" className="bg-police-blue hover:bg-police-lightBlue">
+                Acessar Lista
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
       
