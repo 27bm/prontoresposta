@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SuspectProvider } from "@/contexts/SuspectContext";
 import { MapProvider } from "@/contexts/MapContext";
@@ -31,19 +31,17 @@ const App = () => (
           <DocumentProvider>
             <ScheduleProvider>
               <AppShortcutProvider>
-                <BrowserRouter>
-                  <Routes>
-                    <Route path="/" element={<Layout />}>
-                      <Route index element={<Index />} />
-                      <Route path="/suspects" element={<SuspectsPage />} />
-                      <Route path="/map" element={<MapPage />} />
-                      <Route path="/documents" element={<DocumentsPage />} />
-                      <Route path="/schedule" element={<SchedulePage />} />
-                      <Route path="/shortcuts" element={<ShortcutsPage />} />
-                    </Route>
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<Index />} />
+                    <Route path="/suspects" element={<SuspectsPage />} />
+                    <Route path="/map" element={<MapPage />} />
+                    <Route path="/documents" element={<DocumentsPage />} />
+                    <Route path="/schedule" element={<SchedulePage />} />
+                    <Route path="/shortcuts" element={<ShortcutsPage />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
               </AppShortcutProvider>
             </ScheduleProvider>
           </DocumentProvider>
