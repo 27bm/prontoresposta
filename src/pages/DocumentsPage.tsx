@@ -145,19 +145,12 @@ export function DocumentsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog para visualizar o documento completo */}
+      {/* Dialog para visualizar o documento completo - Removido um dos botões de fechar */}
       <Dialog open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
         <DialogContent className="sm:max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>{viewingDocument?.title}</span>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setViewingDocument(null)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
             </DialogTitle>
             {viewingDocument && (
               <Badge className="w-fit">

@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -7,8 +6,9 @@ import { SuspectCard } from '@/components/suspects/SuspectCard';
 import { SuspectForm } from '@/components/suspects/SuspectForm';
 import { useSuspects } from '@/contexts/SuspectContext';
 import { Suspect } from '@/types/models';
-import { Plus, Search, Key } from 'lucide-react';
+import { Plus, Search, Key, X } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 
 export function SuspectsPage() {
   const { 
@@ -29,6 +29,7 @@ export function SuspectsPage() {
   const [currentSuspect, setCurrentSuspect] = useState<Suspect | undefined>(undefined);
   const [suspectToDelete, setSuspectToDelete] = useState<string | null>(null);
   const [tokenInput, setTokenInput] = useState('');
+  const [activeNeighborhood, setActiveNeighborhood] = useState<string | null>(null);
   
   // Show token dialog if no token is set
   useEffect(() => {
@@ -37,8 +38,44 @@ export function SuspectsPage() {
     }
   }, [listToken]);
   
-  // Filtrar suspeitos com base no termo de pesquisa
-  const filteredSuspects = searchSuspects(searchTerm);
+  // Get unique neighborhoods from suspects
+  const neighborhoods = useMemo(() => {
+    const uniqueNeighborhoods = new Set<string>();
+    
+    suspects.forEach(suspect => {
+      if (suspect.neighborhood && suspect.neighborhood.trim()) {
+        uniqueNeighborhoods.add(suspect.neighborhood);
+      }
+    });
+    
+    return Array.from(uniqueNeighborhoods).sort();
+  }, [suspects]);
+  
+  // Filter suspects by search term and neighborhood
+  const filteredSuspects = useMemo(() => {
+    // First filter by search term
+    let filtered = searchTerm ? searchSuspects(searchTerm) : suspects;
+    
+    // Then filter by active neighborhood if one is selected
+    if (activeNeighborhood) {
+      filtered = filtered.filter(suspect => 
+        suspect.neighborhood === activeNeighborhood
+      );
+    }
+    
+    return filtered;
+  }, [suspects, searchTerm, activeNeighborhood, searchSuspects]);
+  
+  // Handle neighborhood filter toggle
+  const handleNeighborhoodClick = (neighborhood: string) => {
+    if (activeNeighborhood === neighborhood) {
+      // If clicking the active neighborhood, deselect it
+      setActiveNeighborhood(null);
+    } else {
+      // Otherwise, select the clicked neighborhood
+      setActiveNeighborhood(neighborhood);
+    }
+  };
   
   // Funções de manipulação do formulário
   const handleAddClick = () => {
@@ -110,7 +147,7 @@ export function SuspectsPage() {
               Mudar Token
             </Button>
           )}
-          {listToken && ( // Only show Add Suspect button if token exists
+          {listToken && (
             <Button
               onClick={handleAddClick}
               className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
@@ -121,6 +158,35 @@ export function SuspectsPage() {
           )}
         </div>
       </div>
+      
+      {/* Neighborhood filter buttons */}
+      {neighborhoods.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-3">
+          {neighborhoods.map((neighborhood) => (
+            <Badge
+              key={neighborhood}
+              variant={activeNeighborhood === neighborhood ? "default" : "outline"}
+              className={`cursor-pointer ${
+                activeNeighborhood === neighborhood 
+                  ? "bg-police-blue hover:bg-police-lightBlue" 
+                  : "hover:bg-gray-100"
+              }`}
+              onClick={() => handleNeighborhoodClick(neighborhood)}
+            >
+              {neighborhood}
+              {activeNeighborhood === neighborhood && (
+                <X 
+                  className="h-3 w-3 ml-1" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveNeighborhood(null);
+                  }}
+                />
+              )}
+            </Badge>
+          ))}
+        </div>
+      )}
       
       {loading ? (
         <div className="flex justify-center p-8">
@@ -143,14 +209,18 @@ export function SuspectsPage() {
         <div className="text-center py-10">
           <p className="text-gray-500">
             {listToken ? (
-              searchTerm ? 
-                "Nenhum suspeito encontrado para a pesquisa: " + searchTerm : 
+              activeNeighborhood ? (
+                `Nenhum suspeito encontrado no bairro: ${activeNeighborhood}`
+              ) : searchTerm ? (
+                "Nenhum suspeito encontrado para a pesquisa: " + searchTerm
+              ) : (
                 "Nenhum suspeito cadastrado nesta lista."
+              )
             ) : (
               "Informe um token para acessar uma lista de suspeitos."
             )}
           </p>
-          {listToken && !searchTerm && (
+          {listToken && !searchTerm && !activeNeighborhood && (
             <Button
               onClick={handleAddClick}
               className="mt-4 bg-police-blue hover:bg-police-lightBlue"
