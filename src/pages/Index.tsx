@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, MapPin, FileText, Calendar, Smartphone } from 'lucide-react';
+import { User, MapPin, FileText, Calendar, Smartphone, Calculator } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -39,30 +39,31 @@ const Index = () => {
       path: '/shortcuts',
       color: 'bg-red-100 text-red-600',
     },
+    {
+      title: 'Calculadora TAF',
+      icon: Calculator,
+      path: '/taf',
+      color: 'bg-cyan-100 text-cyan-600',
+    },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col -mt-4 -mx-4">
-      {/* Hero com background */}
-      <div 
-        className="relative h-60 mb-8 flex items-center justify-center"
-        style={{
-          backgroundImage: 'url(https://i.ibb.co/ZRVky5CT/Pronto-Resposta3.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div className="relative z-10 text-center">
-          <h1 className="text-4xl font-bold text-white mb-2">prontoresposta</h1>
-        </div>
-      </div>
+    <div 
+      className="min-h-screen flex flex-col -mt-4 -mx-4"
+      style={{
+        backgroundImage: 'url(https://i.ibb.co/ZRVky5CT/Pronto-Resposta3.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
       
       {/* Menu de navegação rápida */}
-      <div className="flex-grow px-4 pb-8">
+      <div className="relative z-10 flex-grow px-4 pb-8 pt-20 flex flex-col justify-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {menuItems.map((item) => (
-            <Card key={item.path} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card key={item.path} className="overflow-hidden hover:shadow-lg transition-shadow bg-white bg-opacity-90 backdrop-blur-sm">
               <CardContent className="p-0">
                 <Button
                   variant="ghost"

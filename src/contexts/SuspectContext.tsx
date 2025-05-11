@@ -103,7 +103,8 @@ export function SuspectProvider({ children }: { children: ReactNode }) {
     return suspects.filter(suspect => 
       suspect.name.toLowerCase().includes(lowerTerm) ||
       (suspect.nickname && suspect.nickname.toLowerCase().includes(lowerTerm)) ||
-      (suspect.neighborhood && suspect.neighborhood.toLowerCase().includes(lowerTerm))
+      (suspect.neighborhood && suspect.neighborhood.toLowerCase().includes(lowerTerm)) ||
+      (suspect.observations && suspect.observations.toLowerCase().includes(lowerTerm))
     );
   };
 

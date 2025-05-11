@@ -8,10 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { ScaleType } from '@/types/models';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowDownCircle } from 'lucide-react';
+import { ArrowDownCircle, Calendar } from 'lucide-react';
 
 export function SchedulePage() {
   const {
@@ -35,6 +37,8 @@ export function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedWorkdayId, setSelectedWorkdayId] = useState<string | null>(null);
   const [scaleType, setScaleType] = useState<ScaleType>('12x36');
+  const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   
   // Manipular seleção de dia no calendário
   const handleSelectDay = (date: Date) => {
@@ -72,7 +76,11 @@ export function SchedulePage() {
   
   // Manipular geração automática de escala
   const handleGenerateScale = () => {
-    generateAutomaticSchedule(currentDate, scaleType);
+    // Converter as strings de data em objetos Date
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+    
+    generateAutomaticSchedule(start, end, scaleType);
     setIsScaleDialogOpen(false);
   };
   
@@ -112,7 +120,7 @@ export function SchedulePage() {
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Meta mensal</span>
+                <span className="text-sm text-gray-600">Carga horária</span>
                 <span className="font-semibold">{targetHours}h</span>
               </div>
               
@@ -185,8 +193,8 @@ export function SchedulePage() {
           </DialogHeader>
           <div className="space-y-4 p-4">
             <p>
-              Esta ação irá gerar automaticamente uma escala de trabalho para o mês atual 
-              baseada no tipo de escala selecionado. Qualquer registro existente será substituído.
+              Esta ação irá gerar automaticamente uma escala de trabalho baseada no tipo de escala selecionado.
+              Selecione o período para gerar a escala.
             </p>
             
             <div className="space-y-2">
@@ -203,6 +211,38 @@ export function SchedulePage() {
                   <SelectItem value="12x24_48">Escala 12x24/48</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Data inicial</Label>
+                <div className="relative">
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="pl-9"
+                    required
+                  />
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="endDate">Data final</Label>
+                <div className="relative">
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="pl-9"
+                    required
+                  />
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                </div>
+              </div>
             </div>
             
             <div className="pt-2">

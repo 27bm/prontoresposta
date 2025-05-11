@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Camera, Upload } from 'lucide-react';
+import { Upload } from 'lucide-react';
 
 interface SuspectFormProps {
   suspect?: Suspect;
@@ -49,16 +49,7 @@ export function SuspectForm({ suspect, onSave, onCancel }: SuspectFormProps) {
     });
   };
   
-  const handlePhotoCapture = () => {
-    // Neste exemplo, apenas simulamos uma captura de foto
-    // Em uma aplicação real, isso seria integrado com a câmera do dispositivo
-    alert('Funcionalidade de captura de foto seria implementada aqui');
-    setPhotoUrl('https://images.unsplash.com/photo-1649972904349-6e44c42644a7?q=80&w=250');
-  };
-  
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Neste exemplo, simulamos um upload de arquivo
-    // Em uma aplicação real, isso enviaria a imagem para um servidor
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
@@ -160,34 +151,23 @@ export function SuspectForm({ suspect, onSave, onCancel }: SuspectFormProps) {
           ) : (
             <div className="flex flex-col items-center gap-4">
               <p className="text-sm text-gray-500">
-                Capture uma foto ou faça upload de uma imagem
+                Faça upload de uma imagem
               </p>
-              <div className="flex gap-4">
+              <div className="relative">
                 <Button 
                   type="button" 
                   variant="outline" 
                   className="flex items-center gap-2" 
-                  onClick={handlePhotoCapture}
                 >
-                  <Camera className="h-4 w-4" />
-                  Câmera
+                  <Upload className="h-4 w-4" />
+                  Upload
                 </Button>
-                <div className="relative">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="flex items-center gap-2" 
-                  >
-                    <Upload className="h-4 w-4" />
-                    Upload
-                  </Button>
-                  <Input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handlePhotoUpload} 
-                    className="absolute inset-0 opacity-0 cursor-pointer" 
-                  />
-                </div>
+                <Input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handlePhotoUpload} 
+                  className="absolute inset-0 opacity-0 cursor-pointer" 
+                />
               </div>
             </div>
           )}

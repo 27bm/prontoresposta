@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { WorkSchedule, ScaleType } from '../types/models';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth, isWithinInterval } from 'date-fns';
 import { toast } from 'sonner';
 
 // Função para calcular horas trabalhadas para um mês específico
@@ -26,14 +26,10 @@ const getMonthlyTargetHours = (date: Date): number => {
 // Função para gerar uma escala automática
 const generateSchedule = (
   startDate: Date,
+  endDate: Date,
   scaleType: ScaleType
 ): WorkSchedule[] => {
-  const currentMonth = startDate.getMonth();
-  const currentYear = startDate.getFullYear();
-  const firstDay = new Date(currentYear, currentMonth, 1);
-  const lastDay = endOfMonth(firstDay);
-  
-  const daysInMonth = eachDayOfInterval({ start: firstDay, end: lastDay });
+  const daysInInterval = eachDayOfInterval({ start: startDate, end: endDate });
   
   // Iniciar com um array vazio
   const newSchedule: WorkSchedule[] = [];
@@ -43,8 +39,8 @@ const generateSchedule = (
     let isWorkDay = true; // Começa trabalhando
     let currentDate = new Date(startDate);
     
-    // Percorre todos os dias do mês
-    while (currentDate.getMonth() === currentMonth) {
+    // Percorre os dias no intervalo
+    while (currentDate <= endDate) {
       if (isWorkDay) {
         newSchedule.push({
           id: currentDate.getTime().toString(),
@@ -67,7 +63,7 @@ const generateSchedule = (
     let dayCount = 0;
     let currentDate = new Date(startDate);
     
-    while (currentDate.getMonth() === currentMonth) {
+    while (currentDate <= endDate) {
       if (dayCount % 4 === 0) {
         // Dia de trabalho - manhã
         newSchedule.push({
@@ -106,7 +102,7 @@ interface ScheduleContextType {
   addWorkDay: (workDay: Omit<WorkSchedule, 'id'>) => void;
   updateWorkDay: (id: string, workDay: Partial<WorkSchedule>) => void;
   deleteWorkDay: (id: string) => void;
-  generateAutomaticSchedule: (startDate: Date, scaleType: ScaleType) => void;
+  generateAutomaticSchedule: (startDate: Date, endDate: Date, scaleType: ScaleType) => void;
   totalWorkedHours: number;
   targetHours: number;
   overtimeHours: number;
@@ -173,19 +169,22 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     }
   };
   
-  const generateAutomaticSchedule = (startDate: Date, scaleType: ScaleType) => {
+  const generateAutomaticSchedule = (startDate: Date, endDate: Date, scaleType: ScaleType) => {
     setLoading(true);
     try {
-      // Filtramos apenas os dias que não são do mês atual
-      const otherMonthsDays = schedule.filter(
-        day => !isSameMonth(new Date(day.date), startDate)
+      // Filtramos os dias que não estão no intervalo selecionado
+      const daysOutsideInterval = schedule.filter(
+        day => {
+          const dayDate = new Date(day.date);
+          return !isWithinInterval(dayDate, { start: startDate, end: endDate });
+        }
       );
       
-      // Geramos a nova escala para o mês atual
-      const newMonthSchedule = generateSchedule(startDate, scaleType);
+      // Geramos a nova escala para o intervalo selecionado
+      const newScheduleDays = generateSchedule(startDate, endDate, scaleType);
       
-      // Combinamos os dias de outros meses com os novos do mês atual
-      setSchedule([...otherMonthsDays, ...newMonthSchedule]);
+      // Combinamos os dias fora do intervalo com os novos dias
+      setSchedule([...daysOutsideInterval, ...newScheduleDays]);
       toast.success('Escala gerada com sucesso!');
     } catch (error) {
       toast.error('Erro ao gerar escala');

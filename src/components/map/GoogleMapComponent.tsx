@@ -17,33 +17,42 @@ const GoogleMapComponent = () => {
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
   const [mapMarkers, setMapMarkers] = useState<google.maps.Marker[]>([]);
   const { markers, updateMarker } = useMapMarkers();
+  const [mapError, setMapError] = useState<string | null>(null);
 
   // Função para inicializar o mapa
   const initializeMap = () => {
     if (!mapRef.current) return;
 
-    // Coordenadas iniciais (Brasil)
-    const center = { lat: -15.77972, lng: -47.92972 };
-    
-    const map = new window.google.maps.Map(mapRef.current, {
-      zoom: 5,
-      center,
-      mapTypeId: 'roadmap',
-      mapTypeControl: true,
-      fullscreenControl: true,
-      streetViewControl: false,
-      zoomControl: true,
-    });
+    try {
+      // Coordenadas iniciais (Brasil)
+      const center = { lat: -15.77972, lng: -47.92972 };
+      
+      const map = new window.google.maps.Map(mapRef.current, {
+        zoom: 5,
+        center,
+        mapTypeId: 'roadmap',
+        mapTypeControl: true,
+        fullscreenControl: true,
+        streetViewControl: false,
+        zoomControl: true,
+      });
 
-    setMapInstance(map);
+      setMapInstance(map);
 
-    // Adicionar evento de clique para adicionar marcadores
-    map.addListener('click', (event: google.maps.MapMouseEvent) => {
-      const position = event.latLng;
-      if (position) {
-        toast.info('Clique no mapa detectado. Use o botão "Adicionar Ponto" para criar um novo marcador.');
-      }
-    });
+      // Adicionar evento de clique para adicionar marcadores
+      map.addListener('click', (event: google.maps.MapMouseEvent) => {
+        const position = event.latLng;
+        if (position) {
+          toast.info('Clique no mapa detectado. Use o botão "Adicionar Ponto" para criar um novo marcador.');
+        }
+      });
+
+      // Se chegou aqui, o mapa foi carregado com sucesso
+      setMapError(null);
+    } catch (error) {
+      console.error("Erro ao inicializar o mapa:", error);
+      setMapError("Erro ao carregar o mapa. Verifique a conexão e tente novamente.");
+    }
   };
 
   // Atualizar marcadores no mapa
@@ -116,6 +125,18 @@ const GoogleMapComponent = () => {
 
   // Carregar script do Google Maps
   useEffect(() => {
+    // Limpar handler de erro anterior
+    const originalOnError = window.onerror;
+    
+    // Configurar handler de erro para capturar erro de API do Google Maps
+    window.onerror = (message) => {
+      if (typeof message === 'string' && message.includes('Google Maps')) {
+        setMapError("Erro ao carregar o Google Maps. Verifique a chave API.");
+        return true; // Prevenir comportamento padrão
+      }
+      return false;
+    };
+    
     // Verificar se o script já foi carregado
     if (window.google && window.google.maps) {
       initializeMap();
@@ -127,11 +148,21 @@ const GoogleMapComponent = () => {
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyChHNHmX1iDhla5qKkdB7w3YAgur72qJk8&callback=initMap`;
     script.async = true;
     script.defer = true;
+    
+    // Adicionar evento de erro para o script
+    script.onerror = () => {
+      setMapError("Falha ao carregar o script do Google Maps. Verifique sua conexão.");
+    };
+    
     document.head.appendChild(script);
 
     return () => {
       window.initMap = () => {};
-      document.head.removeChild(script);
+      window.onerror = originalOnError;
+      const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
+      if (existingScript && existingScript.parentNode) {
+        existingScript.parentNode.removeChild(existingScript);
+      }
     };
   }, []);
 
@@ -145,6 +176,18 @@ const GoogleMapComponent = () => {
   return (
     <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
       <div ref={mapRef} className="w-full h-full"></div>
+      {mapError && (
+        <div className="absolute inset-0 bg-white bg-opacity-80 flex flex-col items-center justify-center p-4">
+          <p className="text-red-600 font-bold mb-2">Erro ao carregar o mapa</p>
+          <p className="text-center">{mapError}</p>
+          <button 
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => window.location.reload()}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      )}
     </div>
   );
 };
