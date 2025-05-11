@@ -9,6 +9,7 @@ import { useDocuments } from '@/contexts/DocumentContext';
 import { Document as DocumentType } from '@/types/models';
 import { PlusCircle, Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 
 export function DocumentsPage() {
   const { documents, addDocument, updateDocument, filterDocuments, loading } = useDocuments();
