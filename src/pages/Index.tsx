@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { User, FileText, Calendar, Smartphone, Calculator } from 'lucide-react';
-import { BACKGROUND_IMAGE_URL } from '@/integrations/supabase/client';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -46,7 +45,7 @@ const Index = () => {
     <div 
       className="min-h-screen flex flex-col -mt-4 -mx-4"
       style={{
-        backgroundImage: `url(${BACKGROUND_IMAGE_URL})`,
+        backgroundImage: `url(https://i.ibb.co/ZRVky5C/Pronto-Resposta3.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
