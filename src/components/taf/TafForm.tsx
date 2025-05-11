@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,6 +10,14 @@ interface TafFormProps {
   onSubmit: (data: TafFormData) => void;
   defaultValues?: Partial<TafFormData>;
 }
+
+const pullupOptions = Array.from({ length: 55 }, (_, i) => i + 1);
+const isometryOptions = [5, 9, 13, 17, 20, 23, 26, 29, 32, 35, 37, 39];
+const situpOptions = Array.from({ length: 60 }, (_, i) => i + 1);
+const runningOptions = [
+  1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 
+  1850, 1900, 1950, 2000, 2050, 2100, 2150, 2200, 2250, 2300, 2350, 2400, 2450, 2500, 2550
+];
 
 export function TafForm({ onSubmit, defaultValues }: TafFormProps) {
   const [gender, setGender] = useState<Gender>(defaultValues?.gender || 'male');
@@ -72,55 +79,81 @@ export function TafForm({ onSubmit, defaultValues }: TafFormProps) {
       {gender === 'male' ? (
         <div className="space-y-2">
           <Label htmlFor="barPullups">Barra (repetições)</Label>
-          <Input
-            id="barPullups"
-            type="number"
-            min="0"
-            max="55"
-            value={barPullups || ''}
-            onChange={(e) => setBarPullups(parseInt(e.target.value) || undefined)}
-            placeholder="Número de repetições (1 a 55)"
-          />
+          <Select 
+            value={barPullups?.toString() || ''}
+            onValueChange={(val) => setBarPullups(parseInt(val))}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione o número de repetições" />
+            </SelectTrigger>
+            <SelectContent className="max-h-[200px] overflow-y-auto">
+              {pullupOptions.map((value) => (
+                <SelectItem key={value} value={value.toString()}>
+                  {value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       ) : (
         <div className="space-y-2">
           <Label htmlFor="barIsometry">Isometria (segundos)</Label>
-          <Input
-            id="barIsometry"
-            type="number"
-            min="0"
-            value={barIsometry || ''}
-            onChange={(e) => setBarIsometry(parseInt(e.target.value) || undefined)}
-            placeholder="Tempo em segundos"
-          />
+          <Select 
+            value={barIsometry?.toString() || ''}
+            onValueChange={(val) => setBarIsometry(parseInt(val))}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione o tempo em segundos" />
+            </SelectTrigger>
+            <SelectContent>
+              {isometryOptions.map((value) => (
+                <SelectItem key={value} value={value.toString()}>
+                  {value} segundos
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
       
       <div className="space-y-2">
         <Label htmlFor="situps">Abdominais (1 minuto)</Label>
-        <Input
-          id="situps"
-          type="number"
-          min="0"
-          value={situps || ''}
-          onChange={(e) => setSitups(parseInt(e.target.value) || 0)}
-          placeholder="Número de repetições"
+        <Select 
+          value={situps?.toString() || ''}
+          onValueChange={(val) => setSitups(parseInt(val))}
           required
-        />
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione o número de repetições" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[200px] overflow-y-auto">
+            {situpOptions.map((value) => (
+              <SelectItem key={value} value={value.toString()}>
+                {value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       
       <div className="space-y-2">
         <Label htmlFor="runningDistance">Corrida (12 minutos)</Label>
-        <Input
-          id="runningDistance"
-          type="number"
-          min="0"
-          step="50"
-          value={runningDistance || ''}
-          onChange={(e) => setRunningDistance(parseInt(e.target.value) || 0)}
-          placeholder="Distância em metros"
+        <Select 
+          value={runningDistance?.toString() || ''}
+          onValueChange={(val) => setRunningDistance(parseInt(val))}
           required
-        />
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione a distância em metros" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[200px] overflow-y-auto">
+            {runningOptions.map((value) => (
+              <SelectItem key={value} value={value.toString()}>
+                {value} metros
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       
       <Button type="submit" className="w-full bg-police-blue hover:bg-police-lightBlue">

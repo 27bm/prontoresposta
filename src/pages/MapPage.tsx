@@ -8,7 +8,7 @@ import { MapMarker } from '@/types/models';
 import { Plus } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Card, CardContent } from '@/components/ui/card';
-import GoogleMapComponent from '@/components/map/GoogleMapComponent';
+import MapboxComponent from '@/components/map/MapboxComponent';
 
 export function MapPage() {
   const { markers, addMarker, updateMarker, deleteMarker, loading } = useMapMarkers();
@@ -85,7 +85,7 @@ export function MapPage() {
   
   return (
     <div className="space-y-4">
-      <GoogleMapComponent />
+      <MapboxComponent markers={markers} />
       
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-bold">Pontos Marcados ({markers.length})</h3>
