@@ -39,6 +39,62 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_answers: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          likes: number
+          question_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          likes?: number
+          question_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          likes?: number
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "forum_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_questions: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          likes: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          likes?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          likes?: number
+          title?: string
+        }
+        Relationships: []
+      }
       suspect_lists: {
         Row: {
           created_at: string

@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, FileText, Calendar, Smartphone, Calculator, Skull } from 'lucide-react';
+import { User, FileText, Calendar, Smartphone, Calculator, Skull, MessageCircle } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -40,6 +40,12 @@ const Index = () => {
       color: 'bg-cyan-100 text-cyan-600',
     },
     {
+      title: 'Fórum Anônimo',
+      icon: MessageCircle,
+      path: '/forum',
+      color: 'bg-green-100 text-green-600',
+    },
+    {
       title: 'BM GPT',
       icon: Skull,
       path: 'http://wa.me/555123990766',
@@ -57,16 +63,7 @@ const Index = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen flex flex-col -mt-4 -mx-4"
-      style={{
-        backgroundImage: `url(https://i.ibb.co/ZRVky5CT/Pronto-Resposta3.png)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
-      }}
-    >      
+    <div className="min-h-screen flex flex-col -mt-4 -mx-4 bg-gray-50">      
       {/* Menu de navegação rápida */}
       <div className="relative z-10 flex-grow px-4 pb-8 pt-20 flex flex-col justify-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -7,7 +7,7 @@ import { DocumentCard } from '@/components/documents/DocumentCard';
 import { DocumentForm } from '@/components/documents/DocumentForm';
 import { useDocuments } from '@/contexts/DocumentContext';
 import { Document as DocumentType } from '@/types/models';
-import { PlusCircle, Search, X } from 'lucide-react';
+import { PlusCircle, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
@@ -149,8 +149,8 @@ export function DocumentsPage() {
       <Dialog open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
         <DialogContent className="sm:max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span>{viewingDocument?.title}</span>
+            <DialogTitle>
+              {viewingDocument?.title}
             </DialogTitle>
             {viewingDocument && (
               <Badge className="w-fit">

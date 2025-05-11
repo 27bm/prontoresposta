@@ -16,6 +16,8 @@ const getTitle = (pathname: string) => {
       return 'Atalhos';
     case '/taf':
       return 'Calculadora TAF';
+    case '/forum':
+      return 'Fórum Anônimo';
     default:
       return 'prontoresposta';
   }

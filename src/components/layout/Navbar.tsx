@@ -9,7 +9,8 @@ import {
   Smartphone,
   Home,
   Activity,
-  Skull
+  Skull,
+  MessageCircle
 } from 'lucide-react';
 
 const navItems = [
@@ -19,6 +20,7 @@ const navItems = [
   { path: '/schedule', title: 'Agenda', icon: Calendar },
   { path: '/shortcuts', title: 'Aplicativos', icon: Smartphone },
   { path: '/taf', title: 'TAF', icon: Activity },
+  { path: '/forum', title: 'Fórum', icon: MessageCircle },
   { path: 'http://wa.me/555123990766', title: 'BM GPT', icon: Skull, external: true },
 ];
 
