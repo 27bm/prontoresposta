@@ -45,7 +45,7 @@ const Index = () => {
     <div 
       className="min-h-screen flex flex-col -mt-4 -mx-4"
       style={{
-        backgroundImage: `url(https://i.ibb.co/ZRVky5C/Pronto-Resposta3.png)`,
+        backgroundImage: `url(https://i.ibb.co/ZRVky5CT/Pronto-Resposta3.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

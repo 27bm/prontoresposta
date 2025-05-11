@@ -6,10 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X, Paperclip } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { v4 as uuidv4 } from 'uuid';
 
 interface DocumentFormProps {
   document?: Document;
@@ -17,17 +14,10 @@ interface DocumentFormProps {
   onCancel: () => void;
 }
 
-interface Attachment {
-  name: string;
-  url: string;
-  file?: File;
-}
-
 export function DocumentForm({ document, onSave, onCancel }: DocumentFormProps) {
   const [title, setTitle] = useState('');
   const [type, setType] = useState<Document['type']>('bulletin');
   const [content, setContent] = useState('');
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [uploadProgress, setUploadProgress] = useState<boolean>(false);
   
   // Se houver um documento para edição, carregue os dados
@@ -36,22 +26,6 @@ export function DocumentForm({ document, onSave, onCancel }: DocumentFormProps) 
       setTitle(document.title);
       setType(document.type);
       setContent(document.content);
-      
-      // Parse attachments from JSON string if they exist
-      if (document.attachmentUrl) {
-        try {
-          const savedAttachments = JSON.parse(document.attachmentUrl);
-          if (Array.isArray(savedAttachments)) {
-            setAttachments(savedAttachments);
-          } else {
-            // For backward compatibility with older format
-            setAttachments([{ name: 'Anexo', url: document.attachmentUrl }]);
-          }
-        } catch (e) {
-          // For backward compatibility with older format
-          setAttachments([{ name: 'Anexo', url: document.attachmentUrl }]);
-        }
-      }
     }
   }, [document]);
   
@@ -60,69 +34,19 @@ export function DocumentForm({ document, onSave, onCancel }: DocumentFormProps) 
     setUploadProgress(true);
     
     try {
-      // Upload any new files first
-      const updatedAttachments = [...attachments];
-      
-      for (let i = 0; i < updatedAttachments.length; i++) {
-        const attachment = updatedAttachments[i];
-        
-        if (attachment.file) {
-          const fileExt = attachment.name.split('.').pop();
-          const filePath = `${uuidv4()}.${fileExt}`;
-          
-          const { data, error } = await supabase.storage
-            .from('documents')
-            .upload(filePath, attachment.file);
-            
-          if (error) {
-            throw error;
-          }
-          
-          // Get public URL
-          const { data: publicUrlData } = supabase.storage
-            .from('documents')
-            .getPublicUrl(filePath);
-            
-          updatedAttachments[i] = {
-            name: attachment.name,
-            url: publicUrlData.publicUrl
-          };
-        }
-      }
-      
-      // Save document with attachments
+      // Save document without attachments
       onSave({
         title,
         type,
-        content,
-        attachmentUrl: updatedAttachments.length > 0 ? JSON.stringify(updatedAttachments) : undefined,
+        content
       });
       
     } catch (error) {
-      console.error('Error uploading file:', error);
-      toast.error('Erro ao fazer upload do arquivo');
+      console.error('Error saving document:', error);
+      toast.error('Erro ao salvar o documento');
     } finally {
       setUploadProgress(false);
     }
-  };
-  
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      
-      setAttachments(prev => [
-        ...prev,
-        {
-          name: file.name,
-          url: URL.createObjectURL(file),
-          file: file
-        }
-      ]);
-    }
-  };
-  
-  const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
   };
   
   return (
@@ -168,48 +92,6 @@ export function DocumentForm({ document, onSave, onCancel }: DocumentFormProps) 
           rows={6} 
           required 
         />
-      </div>
-      
-      <div className="space-y-2">
-        <Label>Anexos</Label>
-        <div className="flex flex-col space-y-2">
-          {attachments.map((attachment, index) => (
-            <div key={index} className="flex items-center justify-between p-2 border rounded-md">
-              <div className="flex items-center">
-                <Paperclip className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="text-sm truncate max-w-[200px]">{attachment.name}</span>
-              </div>
-              <Button 
-                type="button" 
-                variant="ghost" 
-                size="sm"
-                onClick={() => removeAttachment(index)}
-              >
-                <X className="h-4 w-4 text-gray-500" />
-              </Button>
-            </div>
-          ))}
-          
-          <div className="flex items-center p-4 border-2 border-dashed rounded-lg">
-            <div className="flex-1 text-center">
-              <div className="relative inline-block">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="flex items-center gap-2" 
-                >
-                  <Upload className="h-4 w-4" />
-                  Anexar arquivo
-                </Button>
-                <Input 
-                  type="file" 
-                  onChange={handleFileUpload} 
-                  className="absolute inset-0 opacity-0 cursor-pointer" 
-                />
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       
       <div className="flex justify-between pt-4">

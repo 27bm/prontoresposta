@@ -28,7 +28,6 @@ export interface Document {
   title: string;
   type: 'bulletin' | 'procedure' | 'instruction' | 'traffic' | 'other';
   content: string;
-  attachmentUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

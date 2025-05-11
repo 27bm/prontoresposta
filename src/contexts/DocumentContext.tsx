@@ -20,7 +20,6 @@ const mapSupabaseToDocument = (item: any): Document => ({
   title: item.title,
   type: item.type,
   content: item.content,
-  attachmentUrl: item.attachment_url || undefined,
   createdAt: new Date(item.created_at),
   updatedAt: new Date(item.updated_at)
 });
@@ -29,40 +28,12 @@ const mapSupabaseToDocument = (item: any): Document => ({
 const mapDocumentToSupabase = (document: any) => ({
   title: document.title,
   type: document.type,
-  content: document.content,
-  attachment_url: document.attachmentUrl || null
+  content: document.content
 });
 
 export function DocumentProvider({ children }: { children: ReactNode }) {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // Ensure storage bucket exists on mount
-  useEffect(() => {
-    const createBucketIfNeeded = async () => {
-      try {
-        // Check if bucket exists
-        const { data, error } = await supabase.storage.getBucket('documents');
-        
-        if (error && error.message.includes('not found')) {
-          // Create bucket if it doesn't exist
-          const { error: createError } = await supabase.storage.createBucket('documents', {
-            public: true
-          });
-          
-          if (createError) {
-            console.error('Error creating storage bucket:', createError);
-          }
-        } else if (error) {
-          console.error('Error checking storage bucket:', error);
-        }
-      } catch (error) {
-        console.error('Error checking/creating storage bucket:', error);
-      }
-    };
-    
-    createBucketIfNeeded();
-  }, []);
 
   // Load documents on component mount
   useEffect(() => {
@@ -128,7 +99,6 @@ export function DocumentProvider({ children }: { children: ReactNode }) {
       if ('title' in updatedFields) updateData.title = updatedFields.title;
       if ('type' in updatedFields) updateData.type = updatedFields.type;
       if ('content' in updatedFields) updateData.content = updatedFields.content;
-      if ('attachmentUrl' in updatedFields) updateData.attachment_url = updatedFields.attachmentUrl || null;
       
       const { data, error } = await supabase
         .from('documents')
