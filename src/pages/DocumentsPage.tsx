@@ -10,6 +10,7 @@ import { Document as DocumentType } from '@/types/models';
 import { PlusCircle, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function DocumentsPage() {
   const { documents, addDocument, updateDocument, filterDocuments, loading } = useDocuments();
@@ -18,6 +19,7 @@ export function DocumentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentDocument, setCurrentDocument] = useState<DocumentType | undefined>(undefined);
   const [viewingDocument, setViewingDocument] = useState<DocumentType | null>(null);
+  const isMobile = useIsMobile();
   
   // Filtrar documentos com base na pesquisa
   const filteredDocuments = useMemo(() => {
@@ -94,15 +96,17 @@ export function DocumentsPage() {
         />
       </div>
       
-      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="overflow-x-auto">
-        <TabsList className="grid grid-cols-6 mb-4 text-xs md:text-sm">
-          <TabsTrigger value="all">Todos ({documentCounts.all})</TabsTrigger>
-          <TabsTrigger value="bulletin">Boletins ({documentCounts.bulletin})</TabsTrigger>
-          <TabsTrigger value="procedure">POPs ({documentCounts.procedure})</TabsTrigger>
-          <TabsTrigger value="instruction">NIs ({documentCounts.instruction})</TabsTrigger>
-          <TabsTrigger value="traffic">Trânsito ({documentCounts.traffic})</TabsTrigger>
-          <TabsTrigger value="other">Outros ({documentCounts.other})</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full overflow-hidden">
+        <div className="overflow-x-auto pb-1">
+          <TabsList className={`${isMobile ? 'w-max min-w-full' : 'grid grid-cols-6'} mb-4`}>
+            <TabsTrigger value="all" className="text-xs whitespace-nowrap">Todos ({documentCounts.all})</TabsTrigger>
+            <TabsTrigger value="bulletin" className="text-xs whitespace-nowrap">Boletins ({documentCounts.bulletin})</TabsTrigger>
+            <TabsTrigger value="procedure" className="text-xs whitespace-nowrap">POPs ({documentCounts.procedure})</TabsTrigger>
+            <TabsTrigger value="instruction" className="text-xs whitespace-nowrap">NIs ({documentCounts.instruction})</TabsTrigger>
+            <TabsTrigger value="traffic" className="text-xs whitespace-nowrap">Trânsito ({documentCounts.traffic})</TabsTrigger>
+            <TabsTrigger value="other" className="text-xs whitespace-nowrap">Outros ({documentCounts.other})</TabsTrigger>
+          </TabsList>
+        </div>
         
         <TabsContent value={activeTab} className="space-y-4">
           {loading ? (
