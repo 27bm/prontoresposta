@@ -9,6 +9,7 @@ import SchedulePage from './pages/SchedulePage'
 import ReleasePage from './pages/ReleasePage'
 import ShortcutsPage from './pages/ShortcutsPage'
 import ForumPage from './pages/ForumPage'
+import TafPage from './pages/TafPage'
 import NotFound from './pages/NotFound'
 import { SuspectProvider } from './contexts/SuspectContext'
 import { DocumentProvider } from './contexts/DocumentContext'
@@ -31,6 +32,7 @@ function App() {
                     <Route path="documents" element={<DocumentsPage />} />
                     <Route path="schedule" element={<SchedulePage />} />
                     <Route path="release" element={<ReleasePage />} />
+                    <Route path="taf" element={<TafPage />} />
                     <Route path="shortcuts" element={<ShortcutsPage />} />
                     <Route path="forum" element={<ForumPage />} />
                     <Route path="*" element={<NotFound />} />
