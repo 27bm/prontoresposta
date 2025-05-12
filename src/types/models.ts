@@ -51,4 +51,4 @@ export interface AppShortcut {
   isSystemDefault: boolean;
 }
 
-export type ScaleType = '12x36' | '12x24_48' | 'custom';
+export type ScaleType = '12x36' | '12x24_48' | '6x24' | 'custom';

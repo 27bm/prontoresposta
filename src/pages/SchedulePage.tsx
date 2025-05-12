@@ -247,6 +247,7 @@ export function SchedulePage() {
                 <SelectContent>
                   <SelectItem value="12x36">Escala 12x36</SelectItem>
                   <SelectItem value="12x24_48">Escala 12x24/48</SelectItem>
+                  <SelectItem value="6x24">Escala 6x24</SelectItem>
                 </SelectContent>
               </Select>
             </div>

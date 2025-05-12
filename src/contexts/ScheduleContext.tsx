@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { WorkSchedule, ScaleType } from '../types/models';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth, isWithinInterval } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth, isWithinInterval, addHours } from 'date-fns';
 import { toast } from 'sonner';
 
 // Chave para armazenamento local
@@ -27,6 +27,74 @@ const getMonthlyTargetHours = (date: Date): number => {
   return 177; // 31 days
 };
 
+// Helper function to parse time string to hours and minutes
+const parseTimeString = (timeStr: string): { hours: number, minutes: number } => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return { hours, minutes };
+};
+
+// Helper function to format hours and minutes to time string
+const formatTimeString = (hours: number, minutes: number): string => {
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+};
+
+// Função para gerar um registro de escala com divisão na meia-noite se necessário
+const generateWorkDayWithMidnightSplit = (
+  date: Date,
+  startTime: string,
+  duration: number, // in hours
+  type: WorkSchedule['type'] = 'ordinaria'
+): WorkSchedule[] => {
+  const result: WorkSchedule[] = [];
+  const { hours: startHours, minutes: startMinutes } = parseTimeString(startTime);
+  
+  // Calculate end time based on duration
+  let endHours = startHours + duration;
+  const endMinutes = startMinutes;
+  
+  // Check if the shift crosses midnight
+  if (endHours >= 24) {
+    // First part - from start time to midnight
+    const hoursUntilMidnight = 24 - startHours;
+    
+    result.push({
+      id: `${date.getTime()}-part1`,
+      date: new Date(date),
+      startTime,
+      endTime: '00:00',
+      totalHours: hoursUntilMidnight,
+      type
+    });
+    
+    // Second part - from midnight to end time of the next day
+    const remainingHours = duration - hoursUntilMidnight;
+    const nextDay = addDays(date, 1);
+    
+    if (remainingHours > 0) {
+      result.push({
+        id: `${nextDay.getTime()}-part2`,
+        date: nextDay,
+        startTime: '00:00',
+        endTime: formatTimeString(remainingHours, endMinutes),
+        totalHours: remainingHours,
+        type
+      });
+    }
+  } else {
+    // Shift doesn't cross midnight
+    result.push({
+      id: date.getTime().toString(),
+      date: new Date(date),
+      startTime,
+      endTime: formatTimeString(endHours, endMinutes),
+      totalHours: duration,
+      type
+    });
+  }
+  
+  return result;
+};
+
 // Função para gerar uma escala automática
 const generateSchedule = (
   startDate: Date,
@@ -35,14 +103,6 @@ const generateSchedule = (
   startTimeStr: string = '07:00'
 ): WorkSchedule[] => {
   const daysInInterval = eachDayOfInterval({ start: startDate, end: endDate });
-  
-  // Parse the start time
-  const [startHour, startMinute] = startTimeStr.split(':').map(Number);
-  
-  // Calculate end time (12 hours after start time)
-  let endHour = (startHour + 12) % 24;
-  const endMinute = startMinute;
-  const endTimeStr = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
   
   // Iniciar com um array vazio
   const newSchedule: WorkSchedule[] = [];
@@ -55,14 +115,14 @@ const generateSchedule = (
     // Percorre os dias no intervalo
     while (currentDate <= endDate) {
       if (isWorkDay) {
-        newSchedule.push({
-          id: currentDate.getTime().toString(),
-          date: new Date(currentDate),
-          startTime: startTimeStr,
-          endTime: endTimeStr,
-          totalHours: 12,
-          type: 'ordinaria'
-        });
+        const workDays = generateWorkDayWithMidnightSplit(
+          new Date(currentDate),
+          startTimeStr,
+          12,
+          'ordinaria'
+        );
+        
+        newSchedule.push(...workDays);
       }
       
       // Alterna entre trabalho e folga a cada dia
@@ -79,36 +139,46 @@ const generateSchedule = (
     while (currentDate <= endDate) {
       if (dayCount % 4 === 0) {
         // Dia de trabalho - manhã
-        newSchedule.push({
-          id: currentDate.getTime().toString(),
-          date: new Date(currentDate),
-          startTime: startTimeStr,
-          endTime: endTimeStr,
-          totalHours: 12,
-          type: 'ordinaria'
-        });
+        const workDays = generateWorkDayWithMidnightSplit(
+          new Date(currentDate),
+          startTimeStr,
+          12,
+          'ordinaria'
+        );
+        
+        newSchedule.push(...workDays);
       } else if (dayCount % 4 === 1) {
         // For night shift, we need to calculate different hours
-        const nightStartHour = (startHour + 12) % 24;
-        const nightStartTimeStr = `${nightStartHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}`;
-        const nightEndHour = startHour;
-        const nightEndTimeStr = `${nightEndHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+        const nightStartHour = (parseTimeString(startTimeStr).hours + 12) % 24;
+        const nightStartTimeStr = formatTimeString(nightStartHour, parseTimeString(startTimeStr).minutes);
         
         // Dia de trabalho - noite
-        newSchedule.push({
-          id: currentDate.getTime().toString(),
-          date: new Date(currentDate),
-          startTime: nightStartTimeStr,
-          endTime: nightEndTimeStr,
-          totalHours: 12,
-          type: 'ordinaria'
-        });
+        const workDays = generateWorkDayWithMidnightSplit(
+          new Date(currentDate),
+          nightStartTimeStr,
+          12,
+          'ordinaria'
+        );
+        
+        newSchedule.push(...workDays);
       }
       // Os outros 2 dias são folga (48h)
       
       dayCount++;
       currentDate = addDays(currentDate, 1);
     }
+  } else if (scaleType === '6x24') {
+    // Nova implementação para escala 6x24 (6 horas por dia, todos os dias)
+    daysInInterval.forEach(day => {
+      const workDays = generateWorkDayWithMidnightSplit(
+        new Date(day),
+        startTimeStr,
+        6, // 6 horas de duração
+        'ordinaria'
+      );
+      
+      newSchedule.push(...workDays);
+    });
   }
   
   return newSchedule;
