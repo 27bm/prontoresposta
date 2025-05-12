@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Form,
@@ -16,7 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Check, X, Dumbbell, Running } from 'lucide-react';
+import { Check, X, Dumbbell, Timer } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { TafFormData, TafResult, AgeRange, Gender } from '@/types/taf';
 import { calculateTafResult, getTafResultTypeText } from '@/utils/tafCalculator';
@@ -350,7 +349,7 @@ export function TafCalculator() {
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center gap-2 mb-1">
-                          <Running className="h-4 w-4 text-muted-foreground" />
+                          <Timer className="h-4 w-4 text-muted-foreground" />
                           <FormLabel className="text-sm font-medium">Corrida 12min</FormLabel>
                         </div>
                         <Select
