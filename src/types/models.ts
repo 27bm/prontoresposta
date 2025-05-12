@@ -41,4 +41,13 @@ export interface WorkSchedule {
   type: 'regular' | 'extra' | 'compensatory' | 'ordinaria' | 'outras';
 }
 
+export interface AppShortcut {
+  id: string;
+  name: string;
+  description?: string;
+  iconUrl?: string;
+  downloadUrl: string;
+  isSystemDefault: boolean;
+}
+
 export type ScaleType = '12x36' | '12x24_48' | 'custom';
