@@ -30,7 +30,7 @@ export function SuspectsPage() {
   const [suspectToDelete, setSuspectToDelete] = useState<string | null>(null);
   const [tokenInput, setTokenInput] = useState('');
   const [activeNeighborhood, setActiveNeighborhood] = useState<string | null>(null);
-  const [activeFaction, setActiveFaction] = useState<string | null>(null);
+  const [activeGrupo, setActiveGrupo] = useState<string | null>(null);
   
   // Show token dialog if no token is set
   useEffect(() => {
@@ -52,20 +52,20 @@ export function SuspectsPage() {
     return Array.from(uniqueNeighborhoods).sort();
   }, [suspects]);
   
-  // Get unique factions from suspects
-  const factions = useMemo(() => {
-    const uniqueFactions = new Set<string>();
+  // Get unique grupos from suspects
+  const grupos = useMemo(() => {
+    const uniqueGrupos = new Set<string>();
     
     suspects.forEach(suspect => {
-      if (suspect.faction && suspect.faction.trim()) {
-        uniqueFactions.add(suspect.faction);
+      if (suspect.grupo && suspect.grupo.trim()) {
+        uniqueGrupos.add(suspect.grupo);
       }
     });
     
-    return Array.from(uniqueFactions).sort();
+    return Array.from(uniqueGrupos).sort();
   }, [suspects]);
   
-  // Filter suspects by search term, neighborhood, and faction
+  // Filter suspects by search term, neighborhood, and grupo
   const filteredSuspects = useMemo(() => {
     // First filter by search term
     let filtered = searchTerm ? searchSuspects(searchTerm) : suspects;
@@ -77,15 +77,15 @@ export function SuspectsPage() {
       );
     }
     
-    // Then filter by active faction if one is selected
-    if (activeFaction) {
+    // Then filter by active grupo if one is selected
+    if (activeGrupo) {
       filtered = filtered.filter(suspect => 
-        suspect.faction === activeFaction
+        suspect.grupo === activeGrupo
       );
     }
     
     return filtered;
-  }, [suspects, searchTerm, activeNeighborhood, activeFaction, searchSuspects]);
+  }, [suspects, searchTerm, activeNeighborhood, activeGrupo, searchSuspects]);
   
   // Handle neighborhood filter toggle
   const handleNeighborhoodClick = (neighborhood: string) => {
@@ -98,14 +98,14 @@ export function SuspectsPage() {
     }
   };
   
-  // Handle faction filter toggle
-  const handleFactionClick = (faction: string) => {
-    if (activeFaction === faction) {
-      // If clicking the active faction, deselect it
-      setActiveFaction(null);
+  // Handle grupo filter toggle
+  const handleGrupoClick = (grupo: string) => {
+    if (activeGrupo === grupo) {
+      // If clicking the active grupo, deselect it
+      setActiveGrupo(null);
     } else {
-      // Otherwise, select the clicked faction
-      setActiveFaction(faction);
+      // Otherwise, select the clicked grupo
+      setActiveGrupo(grupo);
     }
   };
   
@@ -172,12 +172,12 @@ export function SuspectsPage() {
         onItemClick={handleNeighborhoodClick}
       />
       
-      {/* Faction filter buttons */}
+      {/* Grupo filter buttons */}
       <FilterBadges 
-        items={factions}
-        activeItem={activeFaction}
-        label="Facções"
-        onItemClick={handleFactionClick}
+        items={grupos}
+        activeItem={activeGrupo}
+        label="Grupos"
+        onItemClick={handleGrupoClick}
         badgeClassName={(active) => active ? "bg-police-red hover:bg-red-700" : "hover:bg-gray-100"}
       />
       
@@ -203,7 +203,7 @@ export function SuspectsPage() {
           listToken={listToken}
           searchTerm={searchTerm}
           activeNeighborhood={activeNeighborhood}
-          activeFaction={activeFaction}
+          activeGrupo={activeGrupo}
           onAddClick={handleAddClick}
         />
       )}

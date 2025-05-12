@@ -7,7 +7,7 @@ interface NoSuspectsFoundProps {
   listToken: string | null;
   searchTerm: string;
   activeNeighborhood: string | null;
-  activeFaction: string | null;
+  activeGrupo: string | null; // Renomeado de "activeFaction" para "activeGrupo"
   onAddClick: () => void;
 }
 
@@ -15,19 +15,19 @@ export function NoSuspectsFound({
   listToken, 
   searchTerm, 
   activeNeighborhood, 
-  activeFaction,
+  activeGrupo,  // Renomeado de "activeFaction" para "activeGrupo"
   onAddClick 
 }: NoSuspectsFoundProps) {
   return (
     <div className="text-center py-10">
       <p className="text-gray-500">
         {listToken ? (
-          activeNeighborhood && activeFaction ? (
-            `Nenhum suspeito encontrado no bairro: ${activeNeighborhood} e facção: ${activeFaction}`
+          activeNeighborhood && activeGrupo ? (
+            `Nenhum suspeito encontrado no bairro: ${activeNeighborhood} e grupo: ${activeGrupo}`
           ) : activeNeighborhood ? (
             `Nenhum suspeito encontrado no bairro: ${activeNeighborhood}`
-          ) : activeFaction ? (
-            `Nenhum suspeito encontrado na facção: ${activeFaction}`
+          ) : activeGrupo ? (
+            `Nenhum suspeito encontrado no grupo: ${activeGrupo}`
           ) : searchTerm ? (
             "Nenhum suspeito encontrado para a pesquisa: " + searchTerm
           ) : (
@@ -37,7 +37,7 @@ export function NoSuspectsFound({
           "Informe um token para acessar uma lista de suspeitos."
         )}
       </p>
-      {listToken && !searchTerm && !activeNeighborhood && !activeFaction && (
+      {listToken && !searchTerm && !activeNeighborhood && !activeGrupo && (
         <Button
           onClick={onAddClick}
           className="mt-4 bg-police-blue hover:bg-police-lightBlue"

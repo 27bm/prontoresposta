@@ -19,7 +19,7 @@ export function SuspectForm({ suspect, onSave, onCancel }: SuspectFormProps) {
   const [cpf, setCpf] = useState('');
   const [nickname, setNickname] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
-  const [faction, setFaction] = useState(''); // Novo campo de facção
+  const [grupo, setGrupo] = useState(''); // Renomeado de "facção" para "grupo"
   const [observations, setObservations] = useState('');
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(undefined);
   
@@ -31,7 +31,7 @@ export function SuspectForm({ suspect, onSave, onCancel }: SuspectFormProps) {
       setCpf(suspect.cpf || '');
       setNickname(suspect.nickname || '');
       setNeighborhood(suspect.neighborhood || '');
-      setFaction(suspect.faction || ''); // Carrega a facção se existir
+      setGrupo(suspect.grupo || ''); // Renomeado de "faction" para "grupo"
       setObservations(suspect.observations || '');
       setPhotoUrl(suspect.photoUrl);
     }
@@ -46,7 +46,7 @@ export function SuspectForm({ suspect, onSave, onCancel }: SuspectFormProps) {
       cpf: cpf || undefined,
       nickname: nickname || undefined,
       neighborhood: neighborhood || undefined,
-      faction: faction || undefined, // Salva a facção
+      grupo: grupo || undefined, // Renomeado de "faction" para "grupo"
       observations: observations || undefined,
       photoUrl,
     });
@@ -123,12 +123,12 @@ export function SuspectForm({ suspect, onSave, onCancel }: SuspectFormProps) {
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="faction">Facção</Label>
+        <Label htmlFor="grupo">Grupo</Label>
         <Input 
-          id="faction" 
-          value={faction} 
-          onChange={(e) => setFaction(e.target.value)} 
-          placeholder="Facção criminosa" 
+          id="grupo" 
+          value={grupo} 
+          onChange={(e) => setGrupo(e.target.value)} 
+          placeholder="Grupo, facção ou organização" 
         />
       </div>
       

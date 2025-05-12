@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { Suspect } from '../types/models';
 import { toast } from 'sonner';
@@ -25,7 +26,7 @@ const mapSupabaseToSuspect = (item: any): Suspect => ({
   cpf: item.cpf || undefined,
   nickname: item.nickname || undefined,
   neighborhood: item.neighborhood || undefined,
-  faction: item.faction || undefined, // Adicionado campo de facção
+  grupo: item.grupo || undefined, // Renomeado de "faction" para "grupo"
   observations: item.observations || undefined,
   photoUrl: item.photo_url || undefined,
   createdAt: new Date(item.created_at),
@@ -39,7 +40,7 @@ const mapSuspectToSupabase = (suspect: any, listId: string) => ({
   cpf: suspect.cpf || null,
   nickname: suspect.nickname || null,
   neighborhood: suspect.neighborhood || null,
-  faction: suspect.faction || null, // Adicionado campo de facção
+  grupo: suspect.grupo || null, // Renomeado de "faction" para "grupo"
   observations: suspect.observations || null,
   photo_url: suspect.photoUrl || null,
   list_id: listId
@@ -195,7 +196,7 @@ export function SuspectProvider({ children }: { children: ReactNode }) {
       if ('cpf' in updatedFields) updateData.cpf = updatedFields.cpf || null;
       if ('nickname' in updatedFields) updateData.nickname = updatedFields.nickname || null;
       if ('neighborhood' in updatedFields) updateData.neighborhood = updatedFields.neighborhood || null;
-      if ('faction' in updatedFields) updateData.faction = updatedFields.faction || null; // Adicionado campo de facção
+      if ('grupo' in updatedFields) updateData.grupo = updatedFields.grupo || null; // Renomeado de "faction" para "grupo"
       if ('observations' in updatedFields) updateData.observations = updatedFields.observations || null;
       if ('photoUrl' in updatedFields) updateData.photo_url = updatedFields.photoUrl || null;
       
@@ -260,7 +261,7 @@ export function SuspectProvider({ children }: { children: ReactNode }) {
       suspect.name.toLowerCase().includes(lowerTerm) ||
       (suspect.nickname && suspect.nickname.toLowerCase().includes(lowerTerm)) ||
       (suspect.neighborhood && suspect.neighborhood.toLowerCase().includes(lowerTerm)) ||
-      (suspect.faction && suspect.faction.toLowerCase().includes(lowerTerm)) || // Adicionado pesquisa por facção
+      (suspect.grupo && suspect.grupo.toLowerCase().includes(lowerTerm)) || // Renomeado de "faction" para "grupo"
       (suspect.observations && suspect.observations.toLowerCase().includes(lowerTerm))
     );
   };

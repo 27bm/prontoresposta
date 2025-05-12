@@ -42,8 +42,8 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
                 <p><span className="font-medium">Bairro:</span> {suspect.neighborhood}</p>
               )}
               
-              {suspect.faction && (
-                <p><span className="font-medium">Facção:</span> {suspect.faction}</p>
+              {suspect.grupo && (
+                <p><span className="font-medium">Grupo:</span> {suspect.grupo}</p>
               )}
               
               <div className="flex flex-wrap gap-4 mt-1">
