@@ -7,21 +7,17 @@ import {
   FileText, 
   Calendar, 
   Smartphone,
-  Home,
-  Activity,
   Skull,
   MessageCircle
 } from 'lucide-react';
 
 const navItems = [
-  { path: '/', title: 'Início', icon: Home },
+  { path: 'http://wa.me/555123990766', title: 'BM GPT', icon: Skull, external: true },
   { path: '/suspects', title: 'Suspeitos', icon: User },
   { path: '/documents', title: 'Documentos', icon: FileText },
   { path: '/schedule', title: 'Agenda', icon: Calendar },
   { path: '/shortcuts', title: 'Aplicativos', icon: Smartphone },
-  { path: '/taf', title: 'TAF', icon: Activity },
   { path: '/forum', title: 'Fórum', icon: MessageCircle },
-  { path: 'http://wa.me/555123990766', title: 'BM GPT', icon: Skull, external: true },
 ];
 
 export function Navbar() {

@@ -14,10 +14,8 @@ const getTitle = (pathname: string) => {
       return 'Agenda de Trabalho';
     case '/shortcuts':
       return 'Atalhos';
-    case '/taf':
-      return 'Calculadora TAF';
     case '/forum':
-      return 'Fórum Anônimo';
+      return 'Fórum';
     default:
       return 'prontoresposta';
   }
@@ -29,15 +27,12 @@ export function Header() {
   
   return (
     <header className="sticky top-0 z-10 bg-police-blue bg-opacity-95 backdrop-blur-sm">
-      <div className="flex items-center justify-between p-4 max-w-screen-lg mx-auto">
+      <div className="flex items-center p-4 max-w-screen-lg mx-auto">
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center justify-center w-10 h-10 bg-police-gold rounded-full">
             <span className="text-police-blue font-bold">PR</span>
           </div>
           <h1 className="text-xl font-bold text-white">{title}</h1>
-        </div>
-        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-gray-300">
-          {/* Profile icon/image placeholder */}
         </div>
       </div>
     </header>

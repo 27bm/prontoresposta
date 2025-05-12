@@ -7,7 +7,6 @@ import SuspectsPage from './pages/SuspectsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import SchedulePage from './pages/SchedulePage'
 import ShortcutsPage from './pages/ShortcutsPage'
-import TafPage from './pages/TafPage'
 import ForumPage from './pages/ForumPage'
 import NotFound from './pages/NotFound'
 import { SuspectProvider } from './contexts/SuspectContext'
@@ -29,7 +28,6 @@ function App() {
                   <Route path="documents" element={<DocumentsPage />} />
                   <Route path="schedule" element={<SchedulePage />} />
                   <Route path="shortcuts" element={<ShortcutsPage />} />
-                  <Route path="taf" element={<TafPage />} />
                   <Route path="forum" element={<ForumPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>

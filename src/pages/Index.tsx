@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, FileText, Calendar, Smartphone, Calculator, Skull, MessageCircle } from 'lucide-react';
+import { User, FileText, Calendar, Smartphone, Skull, MessageCircle } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -34,13 +34,7 @@ const Index = () => {
       color: 'bg-red-100 text-red-600',
     },
     {
-      title: 'Calculadora TAF',
-      icon: Calculator,
-      path: '/taf',
-      color: 'bg-cyan-100 text-cyan-600',
-    },
-    {
-      title: 'Fórum Anônimo',
+      title: 'Fórum',
       icon: MessageCircle,
       path: '/forum',
       color: 'bg-green-100 text-green-600',
