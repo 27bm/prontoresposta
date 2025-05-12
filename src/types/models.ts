@@ -6,6 +6,7 @@ export interface Suspect {
   cpf?: string;
   nickname?: string;
   neighborhood?: string;
+  faction?: string;  // Adicionado o campo de facção
   observations?: string;
   photoUrl?: string;
   createdAt: Date;

@@ -30,6 +30,7 @@ export function SuspectsPage() {
   const [suspectToDelete, setSuspectToDelete] = useState<string | null>(null);
   const [tokenInput, setTokenInput] = useState('');
   const [activeNeighborhood, setActiveNeighborhood] = useState<string | null>(null);
+  const [activeFaction, setActiveFaction] = useState<string | null>(null);
   
   // Show token dialog if no token is set
   useEffect(() => {
@@ -51,7 +52,20 @@ export function SuspectsPage() {
     return Array.from(uniqueNeighborhoods).sort();
   }, [suspects]);
   
-  // Filter suspects by search term and neighborhood
+  // Get unique factions from suspects
+  const factions = useMemo(() => {
+    const uniqueFactions = new Set<string>();
+    
+    suspects.forEach(suspect => {
+      if (suspect.faction && suspect.faction.trim()) {
+        uniqueFactions.add(suspect.faction);
+      }
+    });
+    
+    return Array.from(uniqueFactions).sort();
+  }, [suspects]);
+  
+  // Filter suspects by search term, neighborhood, and faction
   const filteredSuspects = useMemo(() => {
     // First filter by search term
     let filtered = searchTerm ? searchSuspects(searchTerm) : suspects;
@@ -63,8 +77,15 @@ export function SuspectsPage() {
       );
     }
     
+    // Then filter by active faction if one is selected
+    if (activeFaction) {
+      filtered = filtered.filter(suspect => 
+        suspect.faction === activeFaction
+      );
+    }
+    
     return filtered;
-  }, [suspects, searchTerm, activeNeighborhood, searchSuspects]);
+  }, [suspects, searchTerm, activeNeighborhood, activeFaction, searchSuspects]);
   
   // Handle neighborhood filter toggle
   const handleNeighborhoodClick = (neighborhood: string) => {
@@ -74,6 +95,17 @@ export function SuspectsPage() {
     } else {
       // Otherwise, select the clicked neighborhood
       setActiveNeighborhood(neighborhood);
+    }
+  };
+  
+  // Handle faction filter toggle
+  const handleFactionClick = (faction: string) => {
+    if (activeFaction === faction) {
+      // If clicking the active faction, deselect it
+      setActiveFaction(null);
+    } else {
+      // Otherwise, select the clicked faction
+      setActiveFaction(faction);
     }
   };
   
@@ -162,6 +194,7 @@ export function SuspectsPage() {
       {/* Neighborhood filter buttons */}
       {neighborhoods.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
+          <span className="text-sm font-medium mr-1 flex items-center">Bairros:</span>
           {neighborhoods.map((neighborhood) => (
             <Badge
               key={neighborhood}
@@ -180,6 +213,36 @@ export function SuspectsPage() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setActiveNeighborhood(null);
+                  }}
+                />
+              )}
+            </Badge>
+          ))}
+        </div>
+      )}
+      
+      {/* Faction filter buttons */}
+      {factions.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-3">
+          <span className="text-sm font-medium mr-1 flex items-center">Facções:</span>
+          {factions.map((faction) => (
+            <Badge
+              key={faction}
+              variant={activeFaction === faction ? "default" : "outline"}
+              className={`cursor-pointer ${
+                activeFaction === faction 
+                  ? "bg-police-red hover:bg-red-700"
+                  : "hover:bg-gray-100"
+              }`}
+              onClick={() => handleFactionClick(faction)}
+            >
+              {faction}
+              {activeFaction === faction && (
+                <X 
+                  className="h-3 w-3 ml-1" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveFaction(null);
                   }}
                 />
               )}
@@ -209,8 +272,12 @@ export function SuspectsPage() {
         <div className="text-center py-10">
           <p className="text-gray-500">
             {listToken ? (
-              activeNeighborhood ? (
+              activeNeighborhood && activeFaction ? (
+                `Nenhum suspeito encontrado no bairro: ${activeNeighborhood} e facção: ${activeFaction}`
+              ) : activeNeighborhood ? (
                 `Nenhum suspeito encontrado no bairro: ${activeNeighborhood}`
+              ) : activeFaction ? (
+                `Nenhum suspeito encontrado na facção: ${activeFaction}`
               ) : searchTerm ? (
                 "Nenhum suspeito encontrado para a pesquisa: " + searchTerm
               ) : (
@@ -220,7 +287,7 @@ export function SuspectsPage() {
               "Informe um token para acessar uma lista de suspeitos."
             )}
           </p>
-          {listToken && !searchTerm && !activeNeighborhood && (
+          {listToken && !searchTerm && !activeNeighborhood && !activeFaction && (
             <Button
               onClick={handleAddClick}
               className="mt-4 bg-police-blue hover:bg-police-lightBlue"

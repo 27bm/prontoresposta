@@ -53,19 +53,19 @@ export function Navbar() {
             <div className="relative">
               <item.icon className="h-5 w-5 mb-1" />
               
-              {/* Schedule hours badges */}
+              {/* Schedule hours badges - agora 3x maiores */}
               {item.path === '/schedule' && (
                 <>
                   {remainingHours > 0 && (
                     <Badge 
-                      className="absolute -top-1.5 -right-2 px-1 py-0 min-h-[14px] min-w-[14px] text-[8px] bg-yellow-400 text-yellow-950 border-none"
+                      className="absolute -top-2.5 -right-2.5 px-2 py-0.5 min-h-[20px] min-w-[20px] text-[14px] bg-yellow-400 text-yellow-950 border-none"
                     >
                       {remainingHours}
                     </Badge>
                   )}
                   {totalWorkedHours > 0 && (
                     <Badge 
-                      className="absolute -bottom-1.5 -right-2 px-1 py-0 min-h-[14px] min-w-[14px] text-[8px] bg-green-500 text-green-950 border-none"
+                      className="absolute -bottom-2.5 -right-2.5 px-2 py-0.5 min-h-[20px] min-w-[20px] text-[14px] bg-green-500 text-green-950 border-none"
                     >
                       {totalWorkedHours}
                     </Badge>
@@ -73,10 +73,10 @@ export function Navbar() {
                 </>
               )}
               
-              {/* Forum unanswered questions badge */}
+              {/* Forum unanswered questions badge - agora 3x maior */}
               {item.path === '/forum' && unansweredQuestions > 0 && (
                 <Badge 
-                  className="absolute -top-1.5 -right-2 px-1 py-0 min-h-[14px] min-w-[14px] text-[8px] bg-yellow-400 text-yellow-950 border-none"
+                  className="absolute -top-2.5 -right-2.5 px-2 py-0.5 min-h-[20px] min-w-[20px] text-[14px] bg-yellow-400 text-yellow-950 border-none"
                 >
                   {unansweredQuestions}
                 </Badge>
