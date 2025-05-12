@@ -30,22 +30,20 @@ export function ReleasePage() {
         </p>
       </div>
 
-      <div className="space-y-2 mb-6">
+      <div className="space-y-4 mb-6">
         {releaseItems.map((item) => (
-          <div key={item.id} className="flex gap-1 items-start">
-            <div className="flex-grow">
-              <Textarea
-                value={item.content}
-                onChange={(e) => updateItem(item.id, e.target.value)}
-                rows={1}
-                className="w-full resize-none overflow-hidden transition-all"
-                style={{
-                  minHeight: 'unset',
-                  height: Math.max(1, (item.content.match(/\n/g) || []).length + 1) * 24 + 'px'
-                }}
-              />
-            </div>
-            <div className={`flex ${isMobile ? 'flex-col' : 'gap-1'}`}>
+          <div key={item.id} className="flex flex-col gap-1">
+            <Textarea
+              value={item.content}
+              onChange={(e) => updateItem(item.id, e.target.value)}
+              rows={1}
+              className="w-full resize-none overflow-hidden transition-all"
+              style={{
+                minHeight: 'unset',
+                height: Math.max(1, (item.content.match(/\n/g) || []).length + 1) * 24 + 'px'
+              }}
+            />
+            <div className="flex flex-wrap gap-1 justify-start mt-1">
               <Button
                 size="icon"
                 variant="ghost"
