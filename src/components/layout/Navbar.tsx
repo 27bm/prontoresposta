@@ -8,7 +8,8 @@ import {
   Calendar, 
   Smartphone,
   Skull,
-  MessageCircle
+  MessageCircle,
+  FileEdit
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useSchedule } from '@/contexts/ScheduleContext';
@@ -19,6 +20,7 @@ const navItems = [
   { path: '/suspects', title: 'Suspeitos', icon: User },
   { path: '/documents', title: 'Documentos', icon: FileText },
   { path: '/schedule', title: 'Agenda', icon: Calendar },
+  { path: '/release', title: 'Release', icon: FileEdit },
   { path: '/forum', title: 'Fórum', icon: MessageCircle },
   { path: '/shortcuts', title: 'Aplicativos', icon: Smartphone },
 ];

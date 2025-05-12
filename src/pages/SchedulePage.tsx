@@ -10,9 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScaleType } from '@/types/models';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, startOfMonth, endOfMonth, isSameMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowDownCircle, Calendar, Clock } from 'lucide-react';
+import { ArrowDownCircle, Calendar, Clock, Trash2 } from 'lucide-react';
 
 export function SchedulePage() {
   const {
@@ -33,6 +33,7 @@ export function SchedulePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isScaleDialogOpen, setIsScaleDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isClearMonthDialogOpen, setIsClearMonthDialogOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedWorkdayId, setSelectedWorkdayId] = useState<string | null>(null);
   const [scaleType, setScaleType] = useState<ScaleType>('12x36');
@@ -83,6 +84,31 @@ export function SchedulePage() {
     // Modificar o contexto para passar também o horário inicial
     generateAutomaticSchedule(start, end, scaleType, startTime);
     setIsScaleDialogOpen(false);
+  };
+  
+  // Limpar os registros do mês atual
+  const handleClearMonth = () => {
+    setIsClearMonthDialogOpen(true);
+  };
+  
+  // Confirmar limpeza dos registros do mês
+  const handleConfirmClearMonth = () => {
+    // Filtrar os registros que não são do mês atual
+    const updatedSchedule = schedule.filter(day => {
+      const dayDate = new Date(day.date);
+      return !isSameMonth(dayDate, currentDate);
+    });
+    
+    // Atualizar o localStorage diretamente para manter consistência
+    try {
+      localStorage.setItem('prontoresposta_schedule_data', JSON.stringify(updatedSchedule));
+      // Forçar um reload da página para atualizar os dados
+      window.location.reload();
+    } catch (error) {
+      console.error('Erro ao limpar registros do mês:', error);
+    }
+    
+    setIsClearMonthDialogOpen(false);
   };
   
   // Obter o registro de trabalho atual selecionado
@@ -149,14 +175,25 @@ export function SchedulePage() {
               )}
             </div>
             
-            <Button
-              onClick={() => setIsScaleDialogOpen(true)}
-              variant="outline"
-              className="w-full flex items-center justify-center gap-2"
-            >
-              <ArrowDownCircle className="h-4 w-4" />
-              Gerar Escala Automática
-            </Button>
+            <div className="space-y-2">
+              <Button
+                onClick={() => setIsScaleDialogOpen(true)}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <ArrowDownCircle className="h-4 w-4" />
+                Gerar Escala Automática
+              </Button>
+              
+              <Button
+                onClick={handleClearMonth}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2 border-red-200 hover:bg-red-50 text-red-600"
+              >
+                <Trash2 className="h-4 w-4" />
+                Limpar Registros do Mês
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -286,6 +323,24 @@ export function SchedulePage() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleConfirmDelete}>
               Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Diálogo de confirmação para limpar o mês */}
+      <AlertDialog open={isClearMonthDialogOpen} onOpenChange={setIsClearMonthDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Limpar registros do mês</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja remover todos os registros de trabalho do mês de {format(currentDate, 'MMMM yyyy', { locale: ptBR })}? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleConfirmClearMonth}>
+              Limpar Registros
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -89,8 +90,7 @@ export function DocumentsPage() {
   
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">Registros e Documentos</h1>
+      <div className="flex justify-end">
         <Button 
           onClick={handleAddClick} 
           className="bg-police-blue hover:bg-police-lightBlue"
