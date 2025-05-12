@@ -28,8 +28,7 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
       setStartTime(schedule.startTime);
       setEndTime(schedule.endTime);
       setTotalHours(schedule.totalHours);
-      setType(schedule.type === 'regular' ? 'ordinaria' : 
-              schedule.type === 'compensatory' ? 'outras' : schedule.type);
+      setType(schedule.type);
     }
   }, [schedule]);
   
@@ -60,15 +59,12 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const mappedType = type === 'ordinaria' ? 'regular' : 
-                        type === 'outras' ? 'compensatory' : type;
-    
     onSave({
       date: selectedDate,
       startTime,
       endTime,
       totalHours,
-      type: mappedType as WorkSchedule['type'],
+      type,
     });
   };
   
@@ -118,7 +114,7 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
           <Label htmlFor="type">Tipo de jornada*</Label>
           <Select 
             value={type}
-            onValueChange={(val) => setType(val)}
+            onValueChange={(val: WorkSchedule['type']) => setType(val)}
             required
           >
             <SelectTrigger>

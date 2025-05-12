@@ -38,16 +38,7 @@ export interface WorkSchedule {
   startTime: string;
   endTime: string;
   totalHours: number;
-  type: 'regular' | 'extra' | 'compensatory';
-}
-
-export interface AppShortcut {
-  id: string;
-  name: string;
-  description?: string;
-  iconUrl?: string;
-  downloadUrl: string;
-  isSystemDefault: boolean;
+  type: 'regular' | 'extra' | 'compensatory' | 'ordinaria' | 'outras';
 }
 
 export type ScaleType = '12x36' | '12x24_48' | 'custom';

@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { WorkSchedule, ScaleType } from '../types/models';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth, isWithinInterval } from 'date-fns';
@@ -56,7 +57,7 @@ const generateSchedule = (
           startTime: startTimeStr,
           endTime: endTimeStr,
           totalHours: 12,
-          type: 'regular'
+          type: 'ordinaria'
         });
       }
       
@@ -80,7 +81,7 @@ const generateSchedule = (
           startTime: startTimeStr,
           endTime: endTimeStr,
           totalHours: 12,
-          type: 'regular'
+          type: 'ordinaria'
         });
       } else if (dayCount % 4 === 1) {
         // For night shift, we need to calculate different hours
@@ -96,7 +97,7 @@ const generateSchedule = (
           startTime: nightStartTimeStr,
           endTime: nightEndTimeStr,
           totalHours: 12,
-          type: 'regular'
+          type: 'ordinaria'
         });
       }
       // Os outros 2 dias são folga (48h)
