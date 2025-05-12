@@ -1,36 +1,70 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { AppShortcut } from '../types/models';
 import { toast } from 'sonner';
 
-// Mock data para atalhos de aplicativos
+// Predefined app shortcuts
 const initialAppShortcuts: AppShortcut[] = [
   {
     id: '1',
-    name: 'SINESP Cidadão',
-    description: 'Consulta de veículos, mandados de prisão e pessoas desaparecidas',
-    downloadUrl: 'https://play.google.com/store/apps/details?id=br.gov.sinesp.cidadao.android',
+    name: 'BM MOB',
+    description: 'Aplicativo móvel da Brigada Militar',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FBM_MOB.apk?alt=media&token=33b8aa9d-4557-4e3a-9548-559f68a138ed',
     isSystemDefault: true,
   },
   {
     id: '2',
-    name: 'SINESP CAD',
-    description: 'Cadastro e consulta de ocorrências policiais',
-    downloadUrl: 'https://play.google.com/store/apps/details?id=br.gov.sinesp.cad.mobile',
+    name: 'Consultas Policiais',
+    description: 'Aplicativo para consultas policiais',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FCONSULTAS_POLICIAIS.apk?alt=media&token=281401ae-a16d-4e62-9098-d33240a5292d',
     isSystemDefault: true,
   },
   {
     id: '3',
-    name: 'Código Penal',
-    description: 'Acesso rápido à legislação penal brasileira atualizada',
-    downloadUrl: 'https://play.google.com/store/apps/details?id=com.andromo.dev576124.app849113',
+    name: 'Agente de Campo',
+    description: 'Aplicativo para agentes em trabalho de campo',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FAGENTE_CAMPO.apk?alt=media&token=8d2ae809-91e9-43a5-9d1c-e6595641ba20',
     isSystemDefault: true,
   },
   {
     id: '4',
-    name: 'CTB Digital',
-    description: 'Código de Trânsito Brasileiro completo e atualizado',
-    downloadUrl: 'https://play.google.com/store/apps/details?id=br.com.ctbdigital',
+    name: 'IPE Saúde',
+    description: 'Aplicativo do IPE Saúde',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FIPE_SAUDE.apk?alt=media&token=f0359d85-f36b-4706-837b-0ae4b5b47cf1',
+    isSystemDefault: true,
+  },
+  {
+    id: '5',
+    name: 'IPVA RS',
+    description: 'Consulta e pagamento de IPVA no RS',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FIPVA_RS.apk?alt=media&token=311bc828-2d45-4dec-aa4b-d31b024f30b9',
+    isSystemDefault: true,
+  },
+  {
+    id: '6',
+    name: 'RED Móvel',
+    description: 'Aplicativo móvel RED',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FRED_MOVEL.apk?alt=media&token=79ae4c95-d0a9-4e22-8dcb-23ecc677090f',
+    isSystemDefault: true,
+  },
+  {
+    id: '7',
+    name: 'Servidor RS',
+    description: 'Aplicativo para servidores do RS',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FSERVIDOR_RS.apk?alt=media&token=50199ce8-ef38-4166-ac6b-8453f7b06468',
+    isSystemDefault: true,
+  },
+  {
+    id: '8',
+    name: 'Talonário Eletrônico',
+    description: 'Talonário eletrônico para registros',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FTALONARIO_ELETRONICO.apk?alt=media&token=376ad85d-14b1-4f23-bed9-1a3b39042cd3',
+    isSystemDefault: true,
+  },
+  {
+    id: '9',
+    name: 'Ticket Log',
+    description: 'Gerenciamento de tickets e logística',
+    downloadUrl: 'https://firebasestorage.googleapis.com/v0/b/pronto-resposta.appspot.com/o/ADM%2FTICKET_LOG.apk?alt=media&token=555c170c-e4ad-416a-b1b2-759bcb94b7c0',
     isSystemDefault: true,
   },
 ];
@@ -49,6 +83,7 @@ export function AppShortcutProvider({ children }: { children: ReactNode }) {
   const [appShortcuts, setAppShortcuts] = useState<AppShortcut[]>(initialAppShortcuts);
   const [loading, setLoading] = useState(false);
 
+  // Keep these methods for compatibility with other components
   const addAppShortcut = (appShortcut: Omit<AppShortcut, 'id' | 'isSystemDefault'>) => {
     setLoading(true);
     try {
@@ -87,7 +122,6 @@ export function AppShortcutProvider({ children }: { children: ReactNode }) {
   const deleteAppShortcut = (id: string) => {
     setLoading(true);
     try {
-      // Verificar se o atalho não é do sistema antes de excluir
       const shortcutToDelete = appShortcuts.find(shortcut => shortcut.id === id);
       if (shortcutToDelete && shortcutToDelete.isSystemDefault) {
         toast.error('Não é possível excluir atalhos do sistema');
