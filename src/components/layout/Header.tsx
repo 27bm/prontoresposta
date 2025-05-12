@@ -13,7 +13,7 @@ const getTitle = (pathname: string) => {
     case '/schedule':
       return 'Agenda de Trabalho';
     case '/shortcuts':
-      return 'Atalhos';
+      return 'Aplicativos';
     case '/forum':
       return 'Fórum';
     default:

@@ -53,12 +53,6 @@ export function AppShortcutCard({ appShortcut, onEdit, onDelete }: AppShortcutCa
           
           <div className="flex-1">
             <h3 className="text-lg font-bold">{appShortcut.name}</h3>
-            
-            {appShortcut.description && (
-              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                {appShortcut.description}
-              </p>
-            )}
           </div>
         </div>
         
