@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -33,6 +32,18 @@ export function DocumentsPage() {
     
     return filtered;
   }, [documents, activeTab, searchQuery, filterDocuments]);
+  
+  // Calculate document counts for each category
+  const documentCounts = useMemo(() => {
+    return {
+      all: documents.length,
+      bulletin: documents.filter(doc => doc.type === 'bulletin').length,
+      procedure: documents.filter(doc => doc.type === 'procedure').length,
+      instruction: documents.filter(doc => doc.type === 'instruction').length,
+      traffic: documents.filter(doc => doc.type === 'traffic').length,
+      other: documents.filter(doc => doc.type === 'other').length,
+    };
+  }, [documents]);
   
   const handleAddClick = () => {
     setCurrentDocument(undefined);
@@ -84,12 +95,12 @@ export function DocumentsPage() {
       
       <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid grid-cols-6 mb-4">
-          <TabsTrigger value="all">Todos</TabsTrigger>
-          <TabsTrigger value="bulletin">Boletins</TabsTrigger>
-          <TabsTrigger value="procedure">POPs</TabsTrigger>
-          <TabsTrigger value="instruction">NIs</TabsTrigger>
-          <TabsTrigger value="traffic">Trânsito</TabsTrigger>
-          <TabsTrigger value="other">Outros</TabsTrigger>
+          <TabsTrigger value="all">Todos ({documentCounts.all})</TabsTrigger>
+          <TabsTrigger value="bulletin">Boletins ({documentCounts.bulletin})</TabsTrigger>
+          <TabsTrigger value="procedure">POPs ({documentCounts.procedure})</TabsTrigger>
+          <TabsTrigger value="instruction">NIs ({documentCounts.instruction})</TabsTrigger>
+          <TabsTrigger value="traffic">Trânsito ({documentCounts.traffic})</TabsTrigger>
+          <TabsTrigger value="other">Outros ({documentCounts.other})</TabsTrigger>
         </TabsList>
         
         <TabsContent value={activeTab} className="space-y-4">

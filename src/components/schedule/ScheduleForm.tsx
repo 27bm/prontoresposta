@@ -20,7 +20,7 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
   const [startTime, setStartTime] = useState('07:00');
   const [endTime, setEndTime] = useState('19:00');
   const [totalHours, setTotalHours] = useState(12);
-  const [type, setType] = useState<WorkSchedule['type']>('regular');
+  const [type, setType] = useState<WorkSchedule['type']>('ordinaria');
   
   // Se houver uma escala para edição, carregue os dados
   useEffect(() => {
@@ -28,7 +28,8 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
       setStartTime(schedule.startTime);
       setEndTime(schedule.endTime);
       setTotalHours(schedule.totalHours);
-      setType(schedule.type);
+      setType(schedule.type === 'regular' ? 'ordinaria' : 
+              schedule.type === 'compensatory' ? 'outras' : schedule.type);
     }
   }, [schedule]);
   
@@ -59,12 +60,15 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const mappedType = type === 'ordinaria' ? 'regular' : 
+                        type === 'outras' ? 'compensatory' : type;
+    
     onSave({
       date: selectedDate,
       startTime,
       endTime,
       totalHours,
-      type,
+      type: mappedType as WorkSchedule['type'],
     });
   };
   
@@ -114,16 +118,16 @@ export function ScheduleForm({ schedule, selectedDate, onSave, onDelete, onCance
           <Label htmlFor="type">Tipo de jornada*</Label>
           <Select 
             value={type}
-            onValueChange={(val: WorkSchedule['type']) => setType(val)}
+            onValueChange={(val) => setType(val)}
             required
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione um tipo" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="regular">Regular</SelectItem>
+              <SelectItem value="ordinaria">Ordinária</SelectItem>
               <SelectItem value="extra">Extra</SelectItem>
-              <SelectItem value="compensatory">Compensatória</SelectItem>
+              <SelectItem value="outras">Outras</SelectItem>
             </SelectContent>
           </Select>
         </div>

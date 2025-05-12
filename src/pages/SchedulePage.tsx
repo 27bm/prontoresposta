@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MonthlyCalendar } from '@/components/schedule/MonthlyCalendar';
 import { ScheduleForm } from '@/components/schedule/ScheduleForm';
@@ -13,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { ScaleType } from '@/types/models';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowDownCircle, Calendar } from 'lucide-react';
+import { ArrowDownCircle, Calendar, Clock } from 'lucide-react';
 
 export function SchedulePage() {
   const {
@@ -39,6 +38,7 @@ export function SchedulePage() {
   const [scaleType, setScaleType] = useState<ScaleType>('12x36');
   const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  const [startTime, setStartTime] = useState<string>('07:00');
   
   // Manipular seleção de dia no calendário
   const handleSelectDay = (date: Date) => {
@@ -80,7 +80,8 @@ export function SchedulePage() {
     const start = parseISO(startDate);
     const end = parseISO(endDate);
     
-    generateAutomaticSchedule(start, end, scaleType);
+    // Modificar o contexto para passar também o horário inicial
+    generateAutomaticSchedule(start, end, scaleType, startTime);
     setIsScaleDialogOpen(false);
   };
   
@@ -194,7 +195,7 @@ export function SchedulePage() {
           <div className="space-y-4 p-4">
             <p>
               Esta ação irá gerar automaticamente uma escala de trabalho baseada no tipo de escala selecionado.
-              Selecione o período para gerar a escala.
+              Selecione o período e o horário inicial para gerar a escala.
             </p>
             
             <div className="space-y-2">
@@ -245,11 +246,19 @@ export function SchedulePage() {
               </div>
             </div>
             
-            <div className="pt-2">
-              <p className="text-sm text-gray-500">
-                <strong>Escala 12x36:</strong> Trabalha 12 horas e folga 36 horas.<br />
-                <strong>Escala 12x24/48:</strong> Trabalha 12 horas de manhã, depois 12 horas à noite, depois folga 48 horas.
-              </p>
+            <div className="space-y-2">
+              <Label htmlFor="startTime">Horário inicial</Label>
+              <div className="relative">
+                <Input
+                  id="startTime"
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="pl-9"
+                  required
+                />
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
             </div>
             
             <div className="flex justify-between pt-4">

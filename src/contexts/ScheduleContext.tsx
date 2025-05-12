@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { WorkSchedule, ScaleType } from '../types/models';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth, isWithinInterval } from 'date-fns';
@@ -27,9 +26,18 @@ const getMonthlyTargetHours = (date: Date): number => {
 const generateSchedule = (
   startDate: Date,
   endDate: Date,
-  scaleType: ScaleType
+  scaleType: ScaleType,
+  startTimeStr: string = '07:00'
 ): WorkSchedule[] => {
   const daysInInterval = eachDayOfInterval({ start: startDate, end: endDate });
+  
+  // Parse the start time
+  const [startHour, startMinute] = startTimeStr.split(':').map(Number);
+  
+  // Calculate end time (12 hours after start time)
+  let endHour = (startHour + 12) % 24;
+  const endMinute = startMinute;
+  const endTimeStr = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
   
   // Iniciar com um array vazio
   const newSchedule: WorkSchedule[] = [];
@@ -45,8 +53,8 @@ const generateSchedule = (
         newSchedule.push({
           id: currentDate.getTime().toString(),
           date: new Date(currentDate),
-          startTime: '07:00',
-          endTime: '19:00',
+          startTime: startTimeStr,
+          endTime: endTimeStr,
           totalHours: 12,
           type: 'regular'
         });
@@ -69,18 +77,24 @@ const generateSchedule = (
         newSchedule.push({
           id: currentDate.getTime().toString(),
           date: new Date(currentDate),
-          startTime: '07:00',
-          endTime: '19:00',
+          startTime: startTimeStr,
+          endTime: endTimeStr,
           totalHours: 12,
           type: 'regular'
         });
       } else if (dayCount % 4 === 1) {
+        // For night shift, we need to calculate different hours
+        const nightStartHour = (startHour + 12) % 24;
+        const nightStartTimeStr = `${nightStartHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}`;
+        const nightEndHour = startHour;
+        const nightEndTimeStr = `${nightEndHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+        
         // Dia de trabalho - noite
         newSchedule.push({
           id: currentDate.getTime().toString(),
           date: new Date(currentDate),
-          startTime: '19:00',
-          endTime: '07:00',
+          startTime: nightStartTimeStr,
+          endTime: nightEndTimeStr,
           totalHours: 12,
           type: 'regular'
         });
@@ -102,7 +116,7 @@ interface ScheduleContextType {
   addWorkDay: (workDay: Omit<WorkSchedule, 'id'>) => void;
   updateWorkDay: (id: string, workDay: Partial<WorkSchedule>) => void;
   deleteWorkDay: (id: string) => void;
-  generateAutomaticSchedule: (startDate: Date, endDate: Date, scaleType: ScaleType) => void;
+  generateAutomaticSchedule: (startDate: Date, endDate: Date, scaleType: ScaleType, startTime?: string) => void;
   totalWorkedHours: number;
   targetHours: number;
   overtimeHours: number;
@@ -169,7 +183,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     }
   };
   
-  const generateAutomaticSchedule = (startDate: Date, endDate: Date, scaleType: ScaleType) => {
+  const generateAutomaticSchedule = (startDate: Date, endDate: Date, scaleType: ScaleType, startTime: string = '07:00') => {
     setLoading(true);
     try {
       // Filtramos os dias que não estão no intervalo selecionado
@@ -181,12 +195,13 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       );
       
       // Geramos a nova escala para o intervalo selecionado
-      const newScheduleDays = generateSchedule(startDate, endDate, scaleType);
+      const newScheduleDays = generateSchedule(startDate, endDate, scaleType, startTime);
       
       // Combinamos os dias fora do intervalo com os novos dias
       setSchedule([...daysOutsideInterval, ...newScheduleDays]);
       toast.success('Escala gerada com sucesso!');
     } catch (error) {
+      console.error('Erro ao gerar escala:', error);
       toast.error('Erro ao gerar escala');
     } finally {
       setLoading(false);

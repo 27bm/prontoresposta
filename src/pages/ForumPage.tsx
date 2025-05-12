@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -212,8 +211,6 @@ const ForumPage = () => {
   
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Fórum Anônimo</h1>
-      
       {/* Search bar */}
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
