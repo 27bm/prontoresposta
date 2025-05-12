@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -47,6 +46,22 @@ export function DocumentsPage() {
       other: documents.filter(doc => doc.type === 'other').length,
     };
   }, [documents]);
+  
+  // Função para determinar a cor do badge com base no tipo
+  const getBadgeStyle = (type: DocumentType['type']) => {
+    switch (type) {
+      case 'bulletin':
+        return 'bg-blue-500';
+      case 'procedure':
+        return 'bg-green-500';
+      case 'instruction':
+        return 'bg-amber-500';
+      case 'traffic':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
   
   const handleAddClick = () => {
     setCurrentDocument(undefined);
@@ -161,7 +176,7 @@ export function DocumentsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog para visualizar o documento completo - Removido um dos botões de fechar */}
+      {/* Dialog para visualizar o documento completo */}
       <Dialog open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
         <DialogContent className="sm:max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -169,7 +184,7 @@ export function DocumentsPage() {
               {viewingDocument?.title}
             </DialogTitle>
             {viewingDocument && (
-              <Badge className="w-fit">
+              <Badge className={`w-fit ${getBadgeStyle(viewingDocument.type)}`}>
                 {(() => {
                   switch (viewingDocument.type) {
                     case 'bulletin': return 'Boletim';
