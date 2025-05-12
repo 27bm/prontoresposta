@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -93,8 +94,8 @@ export function DocumentsPage() {
         />
       </div>
       
-      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-6 mb-4">
+      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="overflow-x-auto">
+        <TabsList className="grid grid-cols-6 mb-4 text-xs md:text-sm">
           <TabsTrigger value="all">Todos ({documentCounts.all})</TabsTrigger>
           <TabsTrigger value="bulletin">Boletins ({documentCounts.bulletin})</TabsTrigger>
           <TabsTrigger value="procedure">POPs ({documentCounts.procedure})</TabsTrigger>

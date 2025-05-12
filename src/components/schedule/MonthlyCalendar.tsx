@@ -48,6 +48,34 @@ export function MonthlyCalendar({
     return `${hours}h`;
   };
   
+  // Função para obter a cor de fundo baseada no tipo de jornada
+  const getScheduleColorClass = (type: WorkSchedule['type']) => {
+    switch (type) {
+      case 'ordinaria':
+        return 'bg-blue-100 text-blue-800';
+      case 'extra':
+        return 'bg-green-100 text-green-800';
+      case 'outras':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  
+  // Função para obter a cor do badge de horas baseada no tipo
+  const getBadgeColorClass = (type: WorkSchedule['type']) => {
+    switch (type) {
+      case 'ordinaria':
+        return 'bg-blue-500';
+      case 'extra':
+        return 'bg-green-500';
+      case 'outras':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+  
   // Navegar para o mês anterior
   const handlePreviousMonth = () => {
     const previousMonth = subMonths(currentDate, 1);
@@ -121,7 +149,7 @@ export function MonthlyCalendar({
                 </span>
                 
                 {scheduleData && (
-                  <span className="text-xs font-semibold bg-police-gold text-white rounded-sm px-1">
+                  <span className={`text-xs font-semibold ${getBadgeColorClass(scheduleData.type)} text-white rounded-sm px-1`}>
                     {formatHours(scheduleData.totalHours)}
                   </span>
                 )}
@@ -129,7 +157,7 @@ export function MonthlyCalendar({
               
               {scheduleData && (
                 <div className="mt-1 text-xs">
-                  <div className="bg-blue-100 rounded p-1 text-center text-blue-800 truncate">
+                  <div className={`rounded p-1 text-center truncate ${getScheduleColorClass(scheduleData.type)}`}>
                     {scheduleData.startTime} - {scheduleData.endTime}
                   </div>
                 </div>

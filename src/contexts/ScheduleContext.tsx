@@ -1,8 +1,12 @@
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { WorkSchedule, ScaleType } from '../types/models';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO, addDays, isSameMonth, isWithinInterval } from 'date-fns';
 import { toast } from 'sonner';
+
+// Chave para armazenamento local
+const SCHEDULE_STORAGE_KEY = 'prontoresposta_schedule_data';
+const CURRENT_DATE_STORAGE_KEY = 'prontoresposta_current_date';
 
 // Função para calcular horas trabalhadas para um mês específico
 const calculateWorkHours = (schedule: WorkSchedule[], date: Date): number => {
@@ -128,8 +132,38 @@ interface ScheduleContextType {
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
 
 export function ScheduleProvider({ children }: { children: ReactNode }) {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [schedule, setSchedule] = useState<WorkSchedule[]>([]);
+  const [currentDate, setCurrentDate] = useState<Date>(() => {
+    // Tentar carregar a data atual do localStorage
+    const savedDate = localStorage.getItem(CURRENT_DATE_STORAGE_KEY);
+    if (savedDate) {
+      try {
+        return new Date(savedDate);
+      } catch (error) {
+        return new Date();
+      }
+    }
+    return new Date();
+  });
+  
+  const [schedule, setSchedule] = useState<WorkSchedule[]>(() => {
+    // Tentar carregar a agenda do localStorage
+    const savedSchedule = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+    if (savedSchedule) {
+      try {
+        const parsedSchedule = JSON.parse(savedSchedule);
+        // Converter as strings de data de volta para objetos Date
+        return parsedSchedule.map((day: any) => ({
+          ...day,
+          date: new Date(day.date)
+        }));
+      } catch (error) {
+        console.error('Erro ao carregar agenda do localStorage:', error);
+        return [];
+      }
+    }
+    return [];
+  });
+  
   const [loading, setLoading] = useState(false);
   
   // Cálculo de horas agora é baseado no mês atual
@@ -137,6 +171,24 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const targetHours = getMonthlyTargetHours(currentDate);
   const overtimeHours = Math.max(0, totalWorkedHours - targetHours);
   const remainingHours = Math.max(0, targetHours - totalWorkedHours);
+  
+  // Salvar alterações no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(schedule));
+    } catch (error) {
+      console.error('Erro ao salvar agenda no localStorage:', error);
+    }
+  }, [schedule]);
+  
+  // Salvar data atual no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(CURRENT_DATE_STORAGE_KEY, currentDate.toISOString());
+    } catch (error) {
+      console.error('Erro ao salvar data atual no localStorage:', error);
+    }
+  }, [currentDate]);
   
   const addWorkDay = (workDay: Omit<WorkSchedule, 'id'>) => {
     setLoading(true);
