@@ -24,7 +24,6 @@ export function ReleasePage() {
   return (
     <div className="max-w-xl mx-auto">
       <div className="mb-4">
-        <h1 className="text-xl font-bold mb-2">Release</h1>
         <p className="text-sm text-gray-600 mb-4">
           Edite os campos abaixo para gerar seu release. As alterações são salvas automaticamente.
         </p>

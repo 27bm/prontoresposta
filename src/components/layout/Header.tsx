@@ -16,6 +16,10 @@ const getTitle = (pathname: string) => {
       return 'Aplicativos';
     case '/forum':
       return 'Fórum';
+    case '/release':
+      return 'Release';
+    case '/taf':
+      return 'Calculadora TAF';
     default:
       return 'prontoresposta';
   }

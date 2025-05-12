@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, FileText, Calendar, Smartphone, Skull, MessageCircle } from 'lucide-react';
+import { User, FileText, Calendar, Smartphone, Skull, MessageCircle, FileEdit, Dumbbell } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const Index = () => {
       color: 'bg-purple-100 text-purple-600',
     },
     {
-      title: 'Atalhos para Aplicativos',
+      title: 'Aplicativos',
       icon: Smartphone,
       path: '/shortcuts',
       color: 'bg-red-100 text-red-600',
@@ -38,6 +38,18 @@ const Index = () => {
       icon: MessageCircle,
       path: '/forum',
       color: 'bg-green-100 text-green-600',
+    },
+    {
+      title: 'Release',
+      icon: FileEdit,
+      path: '/release',
+      color: 'bg-orange-100 text-orange-600',
+    },
+    {
+      title: 'TAF',
+      icon: Dumbbell,
+      path: '/taf',
+      color: 'bg-indigo-100 text-indigo-600',
     },
     {
       title: 'BM GPT',

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Form,
@@ -400,22 +401,24 @@ export function TafCalculator() {
               <div className="flex flex-col gap-2">
                 <div className="text-sm text-muted-foreground">Classificação</div>
                 <div className="flex items-center gap-2">
-                  {result.totalScore >= 150 ? (
-                    <>
-                      <Badge className="bg-green-500">
-                        <Check className="h-3.5 w-3.5 mr-1" />
-                        Aprovado
+                  {(() => {
+                    const getResultColor = () => {
+                      switch (result.resultType) {
+                        case 'excellent': return 'bg-green-500';
+                        case 'very_good': return 'bg-emerald-500';
+                        case 'good': return 'bg-blue-500';
+                        case 'regular': return 'bg-amber-500';
+                        case 'insufficient': return 'bg-red-500';
+                        default: return 'bg-gray-500';
+                      }
+                    };
+                    
+                    return (
+                      <Badge className={getResultColor()}>
+                        {getTafResultTypeText(result.resultType)}
                       </Badge>
-                      <span className="text-sm text-muted-foreground">
-                        ({getTafResultTypeText(result.resultType)})
-                      </span>
-                    </>
-                  ) : (
-                    <Badge className="bg-red-500">
-                      <X className="h-3.5 w-3.5 mr-1" />
-                      Reprovado
-                    </Badge>
-                  )}
+                    );
+                  })()}
                 </div>
               </div>
             </div>
