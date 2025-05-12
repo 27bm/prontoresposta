@@ -14,15 +14,13 @@ interface FilterBadgesProps {
 export function FilterBadges({ 
   items, 
   activeItem, 
-  label, 
   onItemClick,
   badgeClassName = (active) => active ? "bg-police-blue hover:bg-police-lightBlue" : "hover:bg-gray-100"
 }: FilterBadgesProps) {
   if (items.length === 0) return null;
   
   return (
-    <div className="flex flex-wrap gap-2 mt-3">
-      <span className="text-sm font-medium mr-1 flex items-center">{label}:</span>
+    <div className="flex flex-wrap gap-2">
       {items.map((item) => (
         <Badge
           key={item}

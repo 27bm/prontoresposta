@@ -7,7 +7,7 @@ interface NoSuspectsFoundProps {
   listToken: string | null;
   searchTerm: string;
   activeNeighborhood: string | null;
-  activeGrupo: string | null; // Renomeado de "activeFaction" para "activeGrupo"
+  activeGrupo: string | null;
   onAddClick: () => void;
 }
 
@@ -15,7 +15,7 @@ export function NoSuspectsFound({
   listToken, 
   searchTerm, 
   activeNeighborhood, 
-  activeGrupo,  // Renomeado de "activeFaction" para "activeGrupo"
+  activeGrupo,
   onAddClick 
 }: NoSuspectsFoundProps) {
   return (

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SuspectCard } from '@/components/suspects/SuspectCard';
@@ -164,22 +165,23 @@ export function SuspectsPage() {
         onAddSuspect={handleAddClick}
       />
       
-      {/* Neighborhood filter buttons */}
-      <FilterBadges 
-        items={neighborhoods}
-        activeItem={activeNeighborhood}
-        label="Bairros"
-        onItemClick={handleNeighborhoodClick}
-      />
-      
-      {/* Grupo filter buttons */}
-      <FilterBadges 
-        items={grupos}
-        activeItem={activeGrupo}
-        label="Grupos"
-        onItemClick={handleGrupoClick}
-        badgeClassName={(active) => active ? "bg-police-red hover:bg-red-700" : "hover:bg-gray-100"}
-      />
+      {/* Combined filter badges in a single row */}
+      <div className="flex flex-wrap gap-2">
+        <FilterBadges 
+          items={neighborhoods}
+          activeItem={activeNeighborhood}
+          label=""
+          onItemClick={handleNeighborhoodClick}
+        />
+        
+        <FilterBadges 
+          items={grupos}
+          activeItem={activeGrupo}
+          label=""
+          onItemClick={handleGrupoClick}
+          badgeClassName={(active) => active ? "bg-police-red hover:bg-red-700" : "hover:bg-gray-100"}
+        />
+      </div>
       
       {loading ? (
         <div className="flex justify-center p-8">
