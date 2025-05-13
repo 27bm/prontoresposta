@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TafCalculator } from '@/components/taf/TafCalculator';
-import { InfoCircle } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 export function TafPage() {
   return (
@@ -12,7 +12,7 @@ export function TafPage() {
           Selecione as opções abaixo para calcular sua pontuação.
         </p>
         <p className="flex items-center text-xs text-blue-600">
-          <InfoCircle className="w-4 h-4 mr-1" /> 
+          <Info className="w-4 h-4 mr-1" /> 
           Suas seleções são salvas automaticamente e serão restauradas quando você retornar.
         </p>
       </div>
