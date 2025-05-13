@@ -202,7 +202,7 @@ export function SuspectsPage() {
       />
       
       {/* Combined filter badges in a single row */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
         <FilterBadges 
           items={neighborhoods}
           activeItem={activeNeighborhood}

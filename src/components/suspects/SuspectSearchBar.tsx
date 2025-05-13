@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Key, Plus, Share, GalleryHorizontal, GalleryVertical } from 'lucide-react';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SuspectSearchBarProps {
   searchTerm: string;
@@ -24,6 +25,8 @@ export function SuspectSearchBar({
   isGalleryView,
   toggleGalleryView
 }: SuspectSearchBarProps) {
+  const isMobile = useIsMobile();
+  
   const handleShareClick = () => {
     if (!listToken) return;
     
@@ -39,61 +42,65 @@ export function SuspectSearchBar({
   };
 
   return (
-    <div className="flex items-center justify-between flex-wrap gap-3">
-      <div className="relative flex-1 min-w-[200px]">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="relative flex-1 min-w-0">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
-          placeholder="Pesquisar por nome, apelido, bairro ou observações"
+          placeholder={isMobile ? "Pesquisar..." : "Pesquisar por nome, apelido, bairro ou observações"}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-9"
         />
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2 justify-between sm:justify-end">
         {listToken && (
           <Button 
             onClick={toggleGalleryView} 
             variant="outline" 
+            size={isMobile ? "sm" : "default"}
             className="flex-shrink-0"
             title={isGalleryView ? "Visualização em lista" : "Visualização em galeria"}
           >
             {isGalleryView ? (
-              <GalleryVertical className="h-4 w-4 mr-1" />
+              <GalleryVertical className="h-4 w-4" />
             ) : (
-              <GalleryHorizontal className="h-4 w-4 mr-1" />
+              <GalleryHorizontal className="h-4 w-4" />
             )}
-            {isGalleryView ? "Lista" : "Galeria"}
+            {!isMobile && (isGalleryView ? " Lista" : " Galeria")}
           </Button>
         )}
         {listToken && (
           <Button 
             onClick={handleShareClick} 
             variant="outline" 
+            size={isMobile ? "sm" : "default"}
             className="flex-shrink-0"
             title="Compartilhar lista"
           >
-            <Share className="h-4 w-4 mr-1" />
-            Compartilhar
+            <Share className="h-4 w-4" />
+            {!isMobile && " Compartilhar"}
           </Button>
         )}
         {listToken && (
           <Button 
             onClick={onChangeToken} 
             variant="outline" 
+            size={isMobile ? "sm" : "default"}
             className="flex-shrink-0"
             title="Mudar token de acesso"
           >
-            <Key className="h-4 w-4 mr-1" />
-            Mudar Token
+            <Key className="h-4 w-4" />
+            {!isMobile && " Mudar Token"}
           </Button>
         )}
         {listToken && (
           <Button
             onClick={onAddSuspect}
+            size={isMobile ? "sm" : "default"}
             className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
           >
-            <Plus className="h-4 w-4 mr-1" />
-            Adicionar Suspeito
+            <Plus className="h-4 w-4" />
+            {!isMobile && " Adicionar Suspeito"}
           </Button>
         )}
       </div>
