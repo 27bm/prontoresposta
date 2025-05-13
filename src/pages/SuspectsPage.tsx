@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SuspectCard } from '@/components/suspects/SuspectCard';
 import { SuspectForm } from '@/components/suspects/SuspectForm';
@@ -12,6 +12,10 @@ import { TokenDialog } from '@/components/suspects/TokenDialog';
 import { DeleteConfirmDialog } from '@/components/suspects/DeleteConfirmDialog';
 
 export function SuspectsPage() {
+  // Get token from URL if present
+  const { token: urlToken } = useParams<{ token?: string }>();
+  const navigate = useNavigate();
+  
   const { 
     suspects, 
     addSuspect, 
@@ -33,12 +37,21 @@ export function SuspectsPage() {
   const [activeNeighborhood, setActiveNeighborhood] = useState<string | null>(null);
   const [activeGrupo, setActiveGrupo] = useState<string | null>(null);
   
-  // Show token dialog if no token is set
+  // If URL contains a token, use it
   useEffect(() => {
-    if (!listToken) {
+    if (urlToken) {
+      setListToken(urlToken);
+      // Update the URL to the base suspects page after processing the token
+      navigate('/suspects', { replace: true });
+    }
+  }, [urlToken, setListToken, navigate]);
+  
+  // Show token dialog if no token is set and no URL token
+  useEffect(() => {
+    if (!listToken && !urlToken) {
       setIsTokenDialogOpen(true);
     }
-  }, [listToken]);
+  }, [listToken, urlToken]);
   
   // Get unique neighborhoods from suspects
   const neighborhoods = useMemo(() => {

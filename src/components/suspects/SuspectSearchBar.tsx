@@ -2,7 +2,8 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Key, Plus } from 'lucide-react';
+import { Search, Key, Plus, Share } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface SuspectSearchBarProps {
   searchTerm: string;
@@ -19,6 +20,20 @@ export function SuspectSearchBar({
   onChangeToken, 
   onAddSuspect 
 }: SuspectSearchBarProps) {
+  const handleShareClick = () => {
+    if (!listToken) return;
+    
+    // Create the shareable URL with the current token
+    const shareableUrl = `${window.location.origin}/suspects/${listToken}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareableUrl).then(() => {
+      toast.success("Link copiado para a área de transferência!");
+    }).catch(() => {
+      toast.error("Falha ao copiar o link");
+    });
+  };
+
   return (
     <div className="flex items-center justify-between flex-wrap gap-3">
       <div className="relative flex-1 min-w-[200px]">
@@ -31,6 +46,17 @@ export function SuspectSearchBar({
         />
       </div>
       <div className="flex gap-2">
+        {listToken && (
+          <Button 
+            onClick={handleShareClick} 
+            variant="outline" 
+            className="flex-shrink-0"
+            title="Compartilhar lista"
+          >
+            <Share className="h-4 w-4 mr-1" />
+            Compartilhar
+          </Button>
+        )}
         {listToken && (
           <Button 
             onClick={onChangeToken} 
