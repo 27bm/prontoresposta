@@ -23,8 +23,8 @@ export function SuspectSearchBar({
   const handleShareClick = () => {
     if (!listToken) return;
     
-    // Create the shareable URL with the current token
-    const shareableUrl = `${window.location.origin}/suspects/${listToken}`;
+    // Create the shareable URL with the token as query parameter
+    const shareableUrl = `${window.location.origin}/suspects?token=${listToken}`;
     
     // Copy to clipboard
     navigator.clipboard.writeText(shareableUrl).then(() => {

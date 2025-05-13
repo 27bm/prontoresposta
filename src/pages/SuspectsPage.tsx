@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SuspectCard } from '@/components/suspects/SuspectCard';
 import { SuspectForm } from '@/components/suspects/SuspectForm';
@@ -12,9 +13,11 @@ import { TokenDialog } from '@/components/suspects/TokenDialog';
 import { DeleteConfirmDialog } from '@/components/suspects/DeleteConfirmDialog';
 
 export function SuspectsPage() {
-  // Get token from URL if present
-  const { token: urlToken } = useParams<{ token?: string }>();
+  // Get token from URL query parameter if present
+  const location = useLocation();
   const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const urlToken = queryParams.get('token');
   
   const { 
     suspects, 
@@ -37,11 +40,11 @@ export function SuspectsPage() {
   const [activeNeighborhood, setActiveNeighborhood] = useState<string | null>(null);
   const [activeGrupo, setActiveGrupo] = useState<string | null>(null);
   
-  // If URL contains a token, use it
+  // If URL contains a token query parameter, use it
   useEffect(() => {
     if (urlToken) {
       setListToken(urlToken);
-      // Update the URL to the base suspects page after processing the token
+      // Remove token from URL after processing
       navigate('/suspects', { replace: true });
     }
   }, [urlToken, setListToken, navigate]);

@@ -29,7 +29,6 @@ function App() {
                   <Route path="/" element={<Layout />}>
                     <Route index element={<Index />} />
                     <Route path="suspects" element={<SuspectsPage />} />
-                    <Route path="suspects/:token" element={<SuspectsPage />} />
                     <Route path="documents" element={<DocumentsPage />} />
                     <Route path="schedule" element={<SchedulePage />} />
                     <Route path="release" element={<ReleasePage />} />
