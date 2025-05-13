@@ -14,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 215 90% 22%;
+    --primary: 225 70% 30%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 215 16% 35%;
 
-    --accent: 210 40% 96%;
+    --accent: 210 40% 93%;
     --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
@@ -37,7 +37,7 @@
   }
 
   .dark {
-    --background: 222 47% 11%;
+    --background: 222 47% 8%;
     --foreground: 210 40% 98%;
 
     --card: 222 47% 11%;
@@ -53,17 +53,17 @@
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 20% 75%;
 
-    --accent: 217 33% 17%;
+    --accent: 217 33% 19%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 63% 45%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 212 27% 84%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 212 90% 70%;
   }
 }
 
@@ -75,4 +75,21 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* Improved text readability */
+.text-base {
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* Improved contrast for buttons and interactive elements */
+.btn, button:not(.unstyled) {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Improved heading styles */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
 }

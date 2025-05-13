@@ -64,12 +64,14 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
         police: {
-          blue: '#003366',
+          blue: '#003f7e',
           lightBlue: '#0055a4',
           gold: '#d4af37',
           red: '#cc0000',
           darkGray: '#333333',
-          lightGray: '#f5f5f5'
+          lightGray: '#f5f5f5',
+          accent: '#1e6bb8',
+          text: '#24292e'
         }
 			},
 			borderRadius: {
@@ -95,7 +97,39 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
         'pulse-slow': 'pulse-slow 2s linear infinite'
-			}
+			},
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '65ch',
+            color: 'hsl(var(--foreground))',
+            lineHeight: '1.6',
+            a: {
+              color: 'hsl(var(--primary))',
+              textDecoration: 'underline',
+              fontWeight: '500',
+            },
+            strong: {
+              fontWeight: '600',
+            },
+          },
+        },
+      },
+      fontFamily: {
+        sans: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'sans-serif',
+        ],
+      },
+      boxShadow: {
+        'soft': '0 2px 10px rgba(0, 0, 0, 0.08)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
