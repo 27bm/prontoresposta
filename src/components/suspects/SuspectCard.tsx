@@ -3,7 +3,8 @@ import React from 'react';
 import { Suspect } from '@/types/models';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash, User } from 'lucide-react';
+import { Edit, Trash, User, Share, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface SuspectCardProps {
   suspect: Suspect;
@@ -12,6 +13,35 @@ interface SuspectCardProps {
 }
 
 export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
+  const handleShareSuspect = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Create the shareable URL with the token and suspect name for search
+    const listToken = localStorage.getItem('suspectListToken');
+    if (!listToken) return;
+    
+    const shareableUrl = `${window.location.origin}/suspects?token=${listToken}&nome=${encodeURIComponent(suspect.name)}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareableUrl)
+      .then(() => {
+        toast.success("Link do suspeito copiado!");
+      })
+      .catch(() => {
+        toast.error("Falha ao copiar o link");
+      });
+  };
+  
+  const handleCopyText = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        toast.success(`${label} copiado!`);
+      })
+      .catch(() => {
+        toast.error(`Falha ao copiar ${label.toLowerCase()}`);
+      });
+  };
+
   return (
     <Card className="mb-3 overflow-hidden border-l-4 border-l-police-blue">
       <CardContent className="p-0">
@@ -31,7 +61,16 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
           </div>
           
           <div className="flex-1">
-            <h3 className="text-lg font-bold">{suspect.name}</h3>
+            <div className="flex items-center">
+              <h3 className="text-lg font-bold">{suspect.name}</h3>
+              <button 
+                onClick={() => handleCopyText(suspect.name, "Nome")}
+                className="ml-2 p-1 text-gray-500 hover:text-gray-700"
+                title="Copiar nome"
+              >
+                <Copy className="h-3 w-3" />
+              </button>
+            </div>
             
             <div className="text-sm text-gray-600 space-y-1 mt-1">
               {suspect.nickname && (
@@ -48,7 +87,16 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
               
               <div className="flex flex-wrap gap-4 mt-1">
                 {suspect.rg && (
-                  <p><span className="font-medium">RG:</span> {suspect.rg}</p>
+                  <p className="flex items-center">
+                    <span className="font-medium">RG:</span> {suspect.rg}
+                    <button 
+                      onClick={() => handleCopyText(suspect.rg || "", "RG")}
+                      className="ml-2 p-1 text-gray-500 hover:text-gray-700"
+                      title="Copiar RG"
+                    >
+                      <Copy className="h-3 w-3" />
+                    </button>
+                  </p>
                 )}
                 
                 {suspect.cpf && (
@@ -66,6 +114,15 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
         </div>
         
         <div className="flex justify-end p-2 pt-0">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-gray-600" 
+            onClick={handleShareSuspect}
+            title="Compartilhar suspeito"
+          >
+            <Share className="h-4 w-4" />
+          </Button>
           <Button 
             variant="ghost" 
             size="sm" 

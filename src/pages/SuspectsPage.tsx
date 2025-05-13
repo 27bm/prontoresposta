@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -13,11 +12,12 @@ import { TokenDialog } from '@/components/suspects/TokenDialog';
 import { DeleteConfirmDialog } from '@/components/suspects/DeleteConfirmDialog';
 
 export function SuspectsPage() {
-  // Get token from URL query parameter if present
+  // Get token and name from URL query parameters if present
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const urlToken = queryParams.get('token');
+  const searchName = queryParams.get('nome');
   
   const { 
     suspects, 
@@ -44,10 +44,16 @@ export function SuspectsPage() {
   useEffect(() => {
     if (urlToken) {
       setListToken(urlToken);
-      // Remove token from URL after processing
+      
+      // If there's a name parameter, set it as search term
+      if (searchName) {
+        setSearchTerm(searchName);
+      }
+      
+      // Remove token and name from URL after processing
       navigate('/suspects', { replace: true });
     }
-  }, [urlToken, setListToken, navigate]);
+  }, [urlToken, searchName, setListToken, navigate]);
   
   // Show token dialog if no token is set and no URL token
   useEffect(() => {
