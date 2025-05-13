@@ -99,8 +99,8 @@ export function SuspectSearchBar({
             size={isMobile ? "sm" : "default"}
             className="bg-police-blue hover:bg-police-lightBlue flex-shrink-0"
           >
-            <Plus className="h-4 w-4" />
-            {!isMobile && " Adicionar Suspeito"}
+            <Plus className="h-4 w-4 mr-1" />
+            Adicionar Suspeito
           </Button>
         )}
       </div>
