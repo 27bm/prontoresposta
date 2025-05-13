@@ -30,13 +30,13 @@ export function Header() {
   const title = getTitle(location.pathname);
   
   return (
-    <header className="sticky top-0 z-10 bg-police-blue bg-opacity-95 backdrop-blur-sm">
+    <header className="sticky top-0 z-10 bg-white shadow-sm">
       <div className="flex items-center p-4 max-w-screen-lg mx-auto">
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center justify-center w-10 h-10 bg-police-gold rounded-full">
             <span className="text-police-blue font-bold">PR</span>
           </div>
-          <h1 className="text-xl font-bold text-white">{title}</h1>
+          <h1 className="text-xl font-bold text-police-blue">{title}</h1>
         </div>
       </div>
     </header>

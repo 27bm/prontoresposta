@@ -40,7 +40,7 @@ export function Navbar() {
   };
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900 to-police-blue border-t border-t-white/10 z-10">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-md z-10">
       <div className="flex justify-between w-full max-w-screen-lg mx-auto px-1">
         {navItems.map((item) => (
           <Link
@@ -49,8 +49,8 @@ export function Navbar() {
             className={cn(
               "flex flex-col items-center justify-center py-2 text-center transition-all relative",
               location.pathname === item.path && !item.external
-                ? "text-police-gold"
-                : "text-white/70 hover:text-white"
+                ? "text-police-blue font-medium"
+                : "text-gray-500 hover:text-police-lightBlue"
             )}
             onClick={(e) => handleNavigation(item, e)}
           >
@@ -60,7 +60,7 @@ export function Navbar() {
               {/* Schedule hours badges - only display worked hours */}
               {item.path === '/schedule' && totalWorkedHours > 0 && (
                 <Badge 
-                  className="absolute -top-2 -right-2 px-1 py-0.25 min-h-[12px] min-w-[12px] text-[10px] bg-green-500 text-green-950 border-none"
+                  className="absolute -top-2 -right-2 px-1 py-0.25 min-h-[12px] min-w-[12px] text-[10px] bg-green-500 text-white border-none"
                 >
                   {totalWorkedHours}
                 </Badge>

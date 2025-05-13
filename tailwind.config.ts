@@ -64,8 +64,8 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
         police: {
-          blue: '#003366',
-          lightBlue: '#0055a4',
+          blue: '#2c4c80',
+          lightBlue: '#4e78c4',
           gold: '#d4af37',
           red: '#cc0000',
           darkGray: '#333333',

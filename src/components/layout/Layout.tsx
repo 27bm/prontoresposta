@@ -9,7 +9,7 @@ export function Layout() {
   const isMobile = useIsMobile();
   
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
       <main className={`flex-1 p-4 ${isMobile ? 'pb-24' : 'pb-20'} max-w-screen-lg mx-auto w-full`}>
         <Outlet />

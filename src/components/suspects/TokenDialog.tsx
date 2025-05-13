@@ -21,9 +21,9 @@ export function TokenDialog({
 }: TokenDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-police-blue">
             Acesso à Lista de Suspeitos
           </DialogTitle>
         </DialogHeader>
@@ -37,10 +37,11 @@ export function TokenDialog({
               onChange={(e) => setTokenInput(e.target.value)} 
               placeholder="Digite o token de acesso"
               required
+              className="border-gray-300 focus:border-police-blue"
             />
           </div>
           <div className="flex justify-end pt-4">
-            <Button type="submit" className="bg-police-blue hover:bg-police-lightBlue">
+            <Button type="submit">
               Acessar Lista
             </Button>
           </div>
