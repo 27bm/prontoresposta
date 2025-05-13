@@ -14,6 +14,7 @@ import { ptBR } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { WorkSchedule } from '@/types/models';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface MonthlyCalendarProps {
   currentDate: Date;
@@ -38,9 +39,11 @@ export function MonthlyCalendar({
   // Nomes dos dias da semana
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   
-  // Função para verificar se um dia tem uma escala marcada
-  const getScheduleForDay = (day: Date) => {
-    return schedule.find(scheduleDay => isSameDay(new Date(scheduleDay.date), day));
+  // Função para obter todos os registros de escala para um dia
+  const getSchedulesForDay = (day: Date) => {
+    return schedule.filter(scheduleDay => 
+      isSameDay(new Date(scheduleDay.date), day)
+    );
   };
   
   // Função para formatar horas (por exemplo, "12h")
@@ -74,6 +77,11 @@ export function MonthlyCalendar({
       default:
         return 'bg-gray-500';
     }
+  };
+  
+  // Calcular a soma total de horas para um dia
+  const getTotalHoursForDay = (schedules: WorkSchedule[]) => {
+    return schedules.reduce((total, schedule) => total + schedule.totalHours, 0);
   };
   
   // Navegar para o mês anterior
@@ -131,35 +139,58 @@ export function MonthlyCalendar({
         
         {/* Dias do mês */}
         {daysInMonth.map(day => {
-          const scheduleData = getScheduleForDay(day);
+          const schedulesForDay = getSchedulesForDay(day);
+          const totalHours = getTotalHoursForDay(schedulesForDay);
+          const hasMultipleSchedules = schedulesForDay.length > 1;
           
           return (
             <div
               key={day.toISOString()}
-              className={`border p-1 min-h-[70px] ${isToday(day) ? 'bg-blue-50' : ''}`}
+              className={cn(
+                "border p-1 cursor-pointer transition-colors hover:bg-gray-50",
+                isToday(day) ? 'bg-blue-50' : '',
+                // Aumento da altura mínima para acomodar mais informações
+                "min-h-[85px] md:min-h-[100px]"
+              )}
               onClick={() => onSelectDay(day)}
             >
               <div className="flex justify-between items-start">
                 <span
-                  className={`text-sm font-medium ${
+                  className={cn(
+                    "text-sm font-medium",
                     isToday(day) ? 'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center' : ''
-                  }`}
+                  )}
                 >
                   {format(day, 'd')}
                 </span>
                 
-                {scheduleData && (
-                  <span className={`text-xs font-semibold ${getBadgeColorClass(scheduleData.type)} text-white rounded-sm px-1`}>
-                    {formatHours(scheduleData.totalHours)}
+                {schedulesForDay.length > 0 && (
+                  <span className={cn(
+                    "text-xs font-semibold text-white rounded-sm px-1",
+                    getBadgeColorClass(
+                      // Se houver diferentes tipos, mostrar uma cor neutra
+                      hasMultipleSchedules ? 'outras' : schedulesForDay[0].type
+                    )
+                  )}>
+                    {formatHours(totalHours)}
                   </span>
                 )}
               </div>
               
-              {scheduleData && (
-                <div className="mt-1 text-xs">
-                  <div className={`rounded p-1 text-center truncate ${getScheduleColorClass(scheduleData.type)}`}>
-                    {scheduleData.startTime} - {scheduleData.endTime}
-                  </div>
+              {/* Exibir todos os horários de trabalho para este dia */}
+              {schedulesForDay.length > 0 && (
+                <div className="mt-1 space-y-1 overflow-y-auto max-h-[60px] md:max-h-[70px] text-xs">
+                  {schedulesForDay.map((scheduleData, index) => (
+                    <div 
+                      key={`${day.toISOString()}-${index}`} 
+                      className={cn(
+                        "rounded p-1 text-center truncate",
+                        getScheduleColorClass(scheduleData.type)
+                      )}
+                    >
+                      {scheduleData.startTime} - {scheduleData.endTime}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
