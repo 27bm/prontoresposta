@@ -21,6 +21,9 @@ import { useForm } from 'react-hook-form';
 import { TafFormData, TafResult, AgeRange, Gender } from '@/types/taf';
 import { calculateTafResult, getTafResultTypeText } from '@/utils/tafCalculator';
 
+// Chave para armazenamento local
+const TAF_STORAGE_KEY = 'taf_calculator_data';
+
 // Opções para os selects
 const genderOptions = [
   { value: 'male', label: 'Masculino' },
@@ -99,12 +102,29 @@ const getRunningOptions = (gender: Gender): { value: number, label: string }[] =
 };
 
 export function TafCalculator() {
+  // Tente recuperar as seleções salvas do localStorage
+  const getSavedData = (): Partial<TafFormData> => {
+    try {
+      const savedData = localStorage.getItem(TAF_STORAGE_KEY);
+      if (savedData) {
+        return JSON.parse(savedData);
+      }
+    } catch (error) {
+      console.error('Erro ao recuperar dados do TAF:', error);
+    }
+    return {};
+  };
+
+  const savedData = getSavedData();
+
   const form = useForm<TafFormData>({
     defaultValues: {
-      gender: 'male',
-      ageRange: 'up_to_27',
-      situps: 19,
-      runningDistance: 1200
+      gender: savedData.gender || 'male',
+      ageRange: savedData.ageRange || 'up_to_27',
+      situps: savedData.situps || 19,
+      runningDistance: savedData.runningDistance || (savedData.gender === 'female' ? 800 : 1200),
+      barPullups: savedData.barPullups,
+      barIsometry: savedData.barIsometry
     }
   });
 
@@ -120,6 +140,24 @@ export function TafCalculator() {
   const watchSitups = form.watch('situps');
   const watchRunningDistance = form.watch('runningDistance');
 
+  // Salvar seleções no localStorage sempre que houver mudanças
+  useEffect(() => {
+    try {
+      const dataToSave = {
+        gender: watchGender,
+        ageRange: watchAgeRange,
+        situps: watchSitups,
+        runningDistance: watchRunningDistance,
+        ...(watchBarPullups && { barPullups: watchBarPullups }),
+        ...(watchBarIsometry && { barIsometry: watchBarIsometry })
+      };
+      
+      localStorage.setItem(TAF_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error('Erro ao salvar dados do TAF:', error);
+    }
+  }, [watchGender, watchAgeRange, watchBarPullups, watchBarIsometry, watchSitups, watchRunningDistance]);
+
   // Atualizar opções com base no sexo e faixa etária
   useEffect(() => {
     const gender = watchGender;
@@ -134,28 +172,34 @@ export function TafCalculator() {
     // Atualiza opções de corrida
     setRunningOptions(getRunningOptions(gender));
     
-    // Reset os valores quando mudar sexo/idade
+    // Reset os valores quando mudar sexo/idade apenas se não houver dados salvos
     const isYounger = ageRange === 'up_to_27' || ageRange === '28_to_35';
-    if (isYounger) {
-      if (gender === 'male') {
-        form.setValue('barPullups', 1);
+    
+    // Verifica se não há valores salvos para o campo em questão
+    const needsBarReset = (gender === 'male' && !watchBarPullups) || 
+                          (gender === 'female' && isYounger && !watchBarIsometry) ||
+                          (!isYounger && !watchBarPullups);
+    
+    if (needsBarReset) {
+      if (isYounger) {
+        if (gender === 'male') {
+          form.setValue('barPullups', 1);
+        } else {
+          form.setValue('barIsometry', 5);
+        }
       } else {
-        form.setValue('barIsometry', 5);
-      }
-    } else {
-      const defaultValue = gender === 'male' ? 21 : 20;
-      if (gender === 'male') {
-        form.setValue('barPullups', defaultValue);
-      } else {
+        const defaultValue = gender === 'male' ? 21 : 20;
         form.setValue('barPullups', defaultValue);
       }
     }
     
-    // Valores default para corrida
-    const defaultRunningDistance = gender === 'male' ? 1200 : 800;
-    form.setValue('runningDistance', defaultRunningDistance);
+    // Reset para corrida apenas se não houver valor salvo
+    if (!watchRunningDistance) {
+      const defaultRunningDistance = gender === 'male' ? 1200 : 800;
+      form.setValue('runningDistance', defaultRunningDistance);
+    }
     
-  }, [watchGender, watchAgeRange, form]);
+  }, [watchGender, watchAgeRange, form, watchBarPullups, watchBarIsometry, watchRunningDistance]);
 
   // Calcular resultado quando qualquer valor mudar
   useEffect(() => {

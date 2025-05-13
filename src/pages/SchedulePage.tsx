@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MonthlyCalendar } from '@/components/schedule/MonthlyCalendar';
 import { ScheduleForm } from '@/components/schedule/ScheduleForm';
 import { useSchedule } from '@/contexts/ScheduleContext';
@@ -10,9 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScaleType } from '@/types/models';
-import { format, parseISO, startOfMonth, endOfMonth, isSameMonth } from 'date-fns';
+import { format, parseISO, startOfMonth, endOfMonth, isSameMonth, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowDownCircle, Calendar, Clock, Trash2 } from 'lucide-react';
+import { ArrowDownCircle, Calendar, Clock, Trash2, Plus } from 'lucide-react';
 
 export function SchedulePage() {
   const {
@@ -45,16 +45,8 @@ export function SchedulePage() {
   const handleSelectDay = (date: Date) => {
     setSelectedDate(date);
     
-    // Verificar se já existe um registro para este dia
-    const existingDay = schedule.find(day => 
-      format(new Date(day.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-    );
-    
-    if (existingDay) {
-      setSelectedWorkdayId(existingDay.id);
-    } else {
-      setSelectedWorkdayId(null);
-    }
+    // Para múltiplos registros por dia, não precisamos mais selecionar um único registro
+    setSelectedWorkdayId(null);
     
     setIsFormOpen(true);
   };
@@ -71,7 +63,16 @@ export function SchedulePage() {
       deleteWorkDay(selectedWorkdayId);
       setSelectedWorkdayId(null);
       setIsDeleteDialogOpen(false);
-      setIsFormOpen(false);
+      
+      // Se excluir, não fechar o formulário para permitir adicionar outro registro
+      // Só fecha se não houver mais registros para o dia
+      const remainingSchedulesForDay = schedule.filter(day => 
+        isSameDay(new Date(day.date), selectedDate) && day.id !== selectedWorkdayId
+      );
+      
+      if (remainingSchedulesForDay.length === 0) {
+        setIsFormOpen(false);
+      }
     }
   };
   
@@ -115,6 +116,13 @@ export function SchedulePage() {
   const getCurrentWorkday = () => {
     if (!selectedWorkdayId) return undefined;
     return schedule.find(day => day.id === selectedWorkdayId);
+  };
+  
+  // Obter todos os registros para a data selecionada
+  const getSchedulesForSelectedDate = () => {
+    return schedule.filter(day => 
+      isSameDay(new Date(day.date), selectedDate)
+    );
   };
   
   return (
@@ -209,16 +217,28 @@ export function SchedulePage() {
           <ScheduleForm
             schedule={getCurrentWorkday()}
             selectedDate={selectedDate}
+            existingSchedules={selectedWorkdayId ? getSchedulesForSelectedDate().filter(s => s.id !== selectedWorkdayId) : getSchedulesForSelectedDate()}
             onSave={(workDay) => {
               if (selectedWorkdayId) {
                 updateWorkDay(selectedWorkdayId, workDay);
               } else {
                 addWorkDay(workDay);
               }
-              setIsFormOpen(false);
+              
+              // Manter o modal aberto após adicionar para permitir vários registros
+              if (selectedWorkdayId) {
+                setIsFormOpen(false); // Fecha apenas se estiver editando
+                setSelectedWorkdayId(null);
+              } else {
+                // Resetar campos para um novo registro
+                setSelectedWorkdayId(null);
+              }
             }}
             onDelete={handleDelete}
-            onCancel={() => setIsFormOpen(false)}
+            onCancel={() => {
+              setIsFormOpen(false);
+              setSelectedWorkdayId(null);
+            }}
           />
         </DialogContent>
       </Dialog>
