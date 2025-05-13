@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Key, Plus, Share } from 'lucide-react';
+import { Search, Key, Plus, Share, GalleryHorizontal, GalleryVertical } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SuspectSearchBarProps {
@@ -11,6 +11,8 @@ interface SuspectSearchBarProps {
   listToken: string | null;
   onChangeToken: () => void;
   onAddSuspect: () => void;
+  isGalleryView: boolean;
+  toggleGalleryView: () => void;
 }
 
 export function SuspectSearchBar({ 
@@ -18,7 +20,9 @@ export function SuspectSearchBar({
   setSearchTerm, 
   listToken, 
   onChangeToken, 
-  onAddSuspect 
+  onAddSuspect,
+  isGalleryView,
+  toggleGalleryView
 }: SuspectSearchBarProps) {
   const handleShareClick = () => {
     if (!listToken) return;
@@ -46,6 +50,21 @@ export function SuspectSearchBar({
         />
       </div>
       <div className="flex gap-2">
+        {listToken && (
+          <Button 
+            onClick={toggleGalleryView} 
+            variant="outline" 
+            className="flex-shrink-0"
+            title={isGalleryView ? "Visualização em lista" : "Visualização em galeria"}
+          >
+            {isGalleryView ? (
+              <GalleryVertical className="h-4 w-4 mr-1" />
+            ) : (
+              <GalleryHorizontal className="h-4 w-4 mr-1" />
+            )}
+            {isGalleryView ? "Lista" : "Galeria"}
+          </Button>
+        )}
         {listToken && (
           <Button 
             onClick={handleShareClick} 

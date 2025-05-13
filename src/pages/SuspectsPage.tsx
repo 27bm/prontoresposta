@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,6 +11,7 @@ import { FilterBadges } from '@/components/suspects/SuspectFilterBadges';
 import { NoSuspectsFound } from '@/components/suspects/NoSuspectsFound';
 import { TokenDialog } from '@/components/suspects/TokenDialog';
 import { DeleteConfirmDialog } from '@/components/suspects/DeleteConfirmDialog';
+import { SuspectGalleryView } from '@/components/suspects/SuspectGalleryView';
 
 export function SuspectsPage() {
   // Get token and name from URL query parameters if present
@@ -39,6 +41,7 @@ export function SuspectsPage() {
   const [tokenInput, setTokenInput] = useState('');
   const [activeNeighborhood, setActiveNeighborhood] = useState<string | null>(null);
   const [activeGrupo, setActiveGrupo] = useState<string | null>(null);
+  const [isGalleryView, setIsGalleryView] = useState(false);
   
   // If URL contains a token query parameter, use it
   useEffect(() => {
@@ -177,6 +180,15 @@ export function SuspectsPage() {
     setIsTokenDialogOpen(true);
   };
   
+  const toggleGalleryView = () => {
+    setIsGalleryView(!isGalleryView);
+  };
+  
+  const handleSelectSuspectFromGallery = (suspect: Suspect) => {
+    setSearchTerm(suspect.name);
+    setIsGalleryView(false);
+  };
+  
   return (
     <div className="space-y-4">
       <SuspectSearchBar 
@@ -185,6 +197,8 @@ export function SuspectsPage() {
         listToken={listToken}
         onChangeToken={changeToken}
         onAddSuspect={handleAddClick}
+        isGalleryView={isGalleryView}
+        toggleGalleryView={toggleGalleryView}
       />
       
       {/* Combined filter badges in a single row */}
@@ -212,16 +226,23 @@ export function SuspectsPage() {
           </div>
         </div>
       ) : filteredSuspects.length > 0 ? (
-        <div className="space-y-2">
-          {filteredSuspects.map((suspect) => (
-            <SuspectCard
-              key={suspect.id}
-              suspect={suspect}
-              onEdit={handleEditClick}
-              onDelete={handleDeleteClick}
-            />
-          ))}
-        </div>
+        isGalleryView ? (
+          <SuspectGalleryView 
+            suspects={filteredSuspects}
+            onSelectSuspect={handleSelectSuspectFromGallery}
+          />
+        ) : (
+          <div className="space-y-2">
+            {filteredSuspects.map((suspect) => (
+              <SuspectCard
+                key={suspect.id}
+                suspect={suspect}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <NoSuspectsFound
           listToken={listToken}
