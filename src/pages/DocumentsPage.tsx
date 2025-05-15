@@ -114,12 +114,12 @@ export function DocumentsPage() {
       <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full overflow-hidden">
         <div className="overflow-x-auto pb-1">
           <TabsList className={`${isMobile ? 'w-max min-w-full' : 'grid grid-cols-6'} mb-4`}>
-            <TabsTrigger value="all" className="text-xs whitespace-nowrap">Todos ({documentCounts.all})</TabsTrigger>
-            <TabsTrigger value="bulletin" className="text-xs whitespace-nowrap">Boletins ({documentCounts.bulletin})</TabsTrigger>
-            <TabsTrigger value="procedure" className="text-xs whitespace-nowrap">POPs ({documentCounts.procedure})</TabsTrigger>
-            <TabsTrigger value="instruction" className="text-xs whitespace-nowrap">NIs ({documentCounts.instruction})</TabsTrigger>
-            <TabsTrigger value="traffic" className="text-xs whitespace-nowrap">Trânsito ({documentCounts.traffic})</TabsTrigger>
-            <TabsTrigger value="other" className="text-xs whitespace-nowrap">Outros ({documentCounts.other})</TabsTrigger>
+            <TabsTrigger value="all" className="text-xs whitespace-nowrap text-gray-800">Todos ({documentCounts.all})</TabsTrigger>
+            <TabsTrigger value="bulletin" className="text-xs whitespace-nowrap text-gray-800">Boletins ({documentCounts.bulletin})</TabsTrigger>
+            <TabsTrigger value="procedure" className="text-xs whitespace-nowrap text-gray-800">POPs ({documentCounts.procedure})</TabsTrigger>
+            <TabsTrigger value="instruction" className="text-xs whitespace-nowrap text-gray-800">NIs ({documentCounts.instruction})</TabsTrigger>
+            <TabsTrigger value="traffic" className="text-xs whitespace-nowrap text-gray-800">Trânsito ({documentCounts.traffic})</TabsTrigger>
+            <TabsTrigger value="other" className="text-xs whitespace-nowrap text-gray-800">Outros ({documentCounts.other})</TabsTrigger>
           </TabsList>
         </div>
         
@@ -127,7 +127,7 @@ export function DocumentsPage() {
           {loading ? (
             <div className="flex justify-center p-8">
               <div className="animate-pulse text-center">
-                <p className="text-gray-500">Carregando...</p>
+                <p className="text-gray-700">Carregando...</p>
               </div>
             </div>
           ) : filteredDocuments.length > 0 ? (
@@ -143,10 +143,10 @@ export function DocumentsPage() {
           ) : (
             <div className="text-center py-10">
               {searchQuery ? (
-                <p className="text-gray-500">Nenhum documento encontrado com os critérios da pesquisa</p>
+                <p className="text-gray-700">Nenhum documento encontrado com os critérios da pesquisa</p>
               ) : (
                 <>
-                  <p className="text-gray-500">Nenhum documento encontrado nesta categoria</p>
+                  <p className="text-gray-700">Nenhum documento encontrado nesta categoria</p>
                   <Button
                     onClick={handleAddClick}
                     className="mt-4 bg-police-blue hover:bg-police-lightBlue"
@@ -164,7 +164,7 @@ export function DocumentsPage() {
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-gray-800">
               {currentDocument ? 'Editar Documento' : 'Adicionar Documento'}
             </DialogTitle>
           </DialogHeader>
@@ -180,7 +180,7 @@ export function DocumentsPage() {
       <Dialog open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
         <DialogContent className="sm:max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-gray-800">
               {viewingDocument?.title}
             </DialogTitle>
             {viewingDocument && (
@@ -197,7 +197,7 @@ export function DocumentsPage() {
               </Badge>
             )}
           </DialogHeader>
-          <DialogDescription className="whitespace-pre-wrap">
+          <DialogDescription className="whitespace-pre-wrap text-gray-700">
             {viewingDocument?.content}
           </DialogDescription>
         </DialogContent>

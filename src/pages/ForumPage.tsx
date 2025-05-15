@@ -226,7 +226,7 @@ const ForumPage = () => {
       {/* Add new question form */}
       <Card>
         <CardContent className="pt-6">
-          <h2 className="font-semibold text-lg mb-4">Faça uma nova pergunta</h2>
+          <h2 className="font-semibold text-lg mb-4 text-gray-800">Faça uma nova pergunta</h2>
           <form onSubmit={handleAddQuestion} className="space-y-4">
             <div>
               <Input
@@ -252,17 +252,17 @@ const ForumPage = () => {
       
       {/* Questions list */}
       <div className="space-y-4">
-        <h2 className="font-semibold text-lg">Perguntas do Fórum</h2>
+        <h2 className="font-semibold text-lg text-gray-800">Perguntas do Fórum</h2>
         
         {isLoading ? (
           <div className="flex justify-center p-12">
             <div className="animate-pulse text-center">
-              <p className="text-gray-500">Carregando perguntas...</p>
+              <p className="text-gray-700">Carregando perguntas...</p>
             </div>
           </div>
         ) : filteredAndSortedQuestions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500">Nenhuma pergunta encontrada. Seja o primeiro a perguntar!</p>
+            <p className="text-gray-700">Nenhuma pergunta encontrada. Seja o primeiro a perguntar!</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -278,7 +278,7 @@ const ForumPage = () => {
                 <CardContent className="p-4 space-y-4">
                   {/* Question */}
                   <div>
-                    <h3 className="text-xl font-semibold">{question.title}</h3>
+                    <h3 className="text-xl font-semibold text-gray-800">{question.title}</h3>
                     <p className="text-gray-700 mt-2 whitespace-pre-wrap">{question.description}</p>
                     
                     <div className="mt-4 flex justify-between items-center">
@@ -290,7 +290,7 @@ const ForumPage = () => {
                       >
                         <ThumbsUp className="h-4 w-4" /> {question.likes}
                       </Button>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-700">
                         {new Date(question.created_at).toLocaleString('pt-BR')}
                       </span>
                     </div>
@@ -299,7 +299,7 @@ const ForumPage = () => {
                   {/* Answers section */}
                   {question.answers && question.answers.length > 0 && (
                     <div className="mt-4 space-y-3 pl-4 border-l-2 border-gray-200">
-                      <h4 className="font-medium">Respostas:</h4>
+                      <h4 className="font-medium text-gray-800">Respostas:</h4>
                       
                       {question.answers.map((answer) => (
                         <div key={answer.id} className="bg-gray-50 rounded-md p-3">
@@ -314,7 +314,7 @@ const ForumPage = () => {
                             >
                               <ThumbsUp className="h-3 w-3" /> {answer.likes}
                             </Button>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-700">
                               {new Date(answer.created_at).toLocaleString('pt-BR')}
                             </span>
                           </div>

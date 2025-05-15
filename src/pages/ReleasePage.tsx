@@ -24,7 +24,7 @@ export function ReleasePage() {
   return (
     <div className="max-w-xl mx-auto">
       <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm text-gray-700 mb-4">
           Edite os campos abaixo para gerar seu release. As alterações são salvas automaticamente.
         </p>
       </div>
@@ -36,7 +36,7 @@ export function ReleasePage() {
               value={item.content}
               onChange={(e) => updateItem(item.id, e.target.value)}
               rows={1}
-              className="w-full resize-none overflow-hidden transition-all"
+              className="w-full resize-none overflow-hidden transition-all text-gray-800"
               style={{
                 minHeight: 'unset',
                 height: Math.max(1, (item.content.match(/\n/g) || []).length + 1) * 24 + 'px'
@@ -47,7 +47,7 @@ export function ReleasePage() {
                 size="icon"
                 variant="ghost"
                 onClick={() => moveItem(item.id, 'up')}
-                className="h-8 w-8"
+                className="h-8 w-8 text-gray-700 hover:bg-gray-100"
                 title="Mover para cima"
               >
                 <ArrowUp className="h-4 w-4" />
@@ -56,7 +56,7 @@ export function ReleasePage() {
                 size="icon"
                 variant="ghost"
                 onClick={() => moveItem(item.id, 'down')}
-                className="h-8 w-8"
+                className="h-8 w-8 text-gray-700 hover:bg-gray-100"
                 title="Mover para baixo"
               >
                 <ArrowDown className="h-4 w-4" />
@@ -65,7 +65,7 @@ export function ReleasePage() {
                 size="icon"
                 variant="ghost"
                 onClick={() => addItem(item.id, 'after')}
-                className="h-8 w-8"
+                className="h-8 w-8 text-gray-700 hover:bg-gray-100"
                 title="Adicionar linha abaixo"
               >
                 <Plus className="h-4 w-4" />
@@ -94,6 +94,7 @@ export function ReleasePage() {
         </Button>
         <Button
           variant="outline"
+          className="text-gray-700"
           onClick={() => setResetDialogOpen(true)}
         >
           Resetar Modelo
@@ -104,14 +105,15 @@ export function ReleasePage() {
       <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Resetar release?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-gray-800">Resetar release?</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-700">
               Esta ação irá restaurar o modelo padrão do release. Todas as suas alterações serão perdidas.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="text-gray-700">Cancelar</AlertDialogCancel>
             <AlertDialogAction
+              className="bg-police-blue hover:bg-police-lightBlue text-white"
               onClick={() => {
                 resetToDefault();
                 setResetDialogOpen(false);

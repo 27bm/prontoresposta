@@ -15,7 +15,7 @@ export function FilterBadges({
   items, 
   activeItem, 
   onItemClick,
-  badgeClassName = (active) => active ? "bg-police-blue text-white hover:bg-police-lightBlue" : "bg-white hover:bg-gray-100"
+  badgeClassName = (active) => active ? "bg-police-blue text-white hover:bg-police-lightBlue" : "bg-white text-gray-800 hover:bg-gray-100"
 }: FilterBadgesProps) {
   if (items.length === 0) return null;
   
