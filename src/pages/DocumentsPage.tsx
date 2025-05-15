@@ -197,7 +197,7 @@ export function DocumentsPage() {
               </Badge>
             )}
           </DialogHeader>
-          <DialogDescription className="whitespace-pre-wrap text-gray-700">
+          <DialogDescription className="whitespace-pre-wrap text-black">
             {viewingDocument?.content}
           </DialogDescription>
         </DialogContent>

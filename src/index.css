@@ -76,3 +76,13 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Minimize the lovable badge */
+:root [data-lovable-badge] {
+  transform: scale(0.01);
+  opacity: 0.1;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+

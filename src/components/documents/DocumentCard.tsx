@@ -34,10 +34,10 @@ export function DocumentCard({ document, onClick }: DocumentCardProps) {
         <div className="flex justify-between items-start">
           <div className="w-full">
             <div className="mb-2">
-              <h3 className="text-lg font-bold">{document.title}</h3>
+              <h3 className="text-lg font-bold text-black">{document.title}</h3>
             </div>
             
-            <p className="text-sm line-clamp-2 mb-4">
+            <p className="text-sm line-clamp-2 mb-4 text-black">
               {document.content}
             </p>
           </div>

@@ -36,7 +36,7 @@ export function ReleasePage() {
               value={item.content}
               onChange={(e) => updateItem(item.id, e.target.value)}
               rows={1}
-              className="w-full resize-none overflow-hidden transition-all text-gray-800"
+              className="w-full resize-none overflow-hidden transition-all text-black bg-white"
               style={{
                 minHeight: 'unset',
                 height: Math.max(1, (item.content.match(/\n/g) || []).length + 1) * 24 + 'px'

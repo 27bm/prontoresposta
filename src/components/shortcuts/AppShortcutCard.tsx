@@ -52,7 +52,7 @@ export function AppShortcutCard({ appShortcut, onEdit, onDelete }: AppShortcutCa
           </div>
           
           <div className="flex-1">
-            <h3 className="text-lg font-bold">{appShortcut.name}</h3>
+            <h3 className="text-lg font-bold text-black">{appShortcut.name}</h3>
           </div>
         </div>
         
