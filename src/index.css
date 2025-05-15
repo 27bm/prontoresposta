@@ -88,3 +88,19 @@
   pointer-events: none;
 }
 
+/* Target specifically the lovable-badge ID */
+#lovable-badge {
+  transform: scale(0.01) !important;
+  opacity: 0.01 !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  z-index: -9999 !important;
+  pointer-events: none !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
