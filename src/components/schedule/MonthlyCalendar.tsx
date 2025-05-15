@@ -126,7 +126,7 @@ export function MonthlyCalendar({
         {weekDays.map(day => (
           <div
             key={day}
-            className="text-center py-2 text-sm font-medium text-gray-600 border-b"
+            className="text-center py-2 text-sm font-medium text-gray-800 border-b"
           >
             {day}
           </div>
@@ -157,7 +157,7 @@ export function MonthlyCalendar({
               <div className="flex justify-between items-start">
                 <span
                   className={cn(
-                    "text-sm font-medium",
+                    "text-sm font-medium text-black",
                     isToday(day) ? 'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center' : ''
                   )}
                 >

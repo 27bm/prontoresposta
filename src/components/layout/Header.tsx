@@ -21,7 +21,7 @@ const getTitle = (pathname: string) => {
     case '/taf':
       return 'Calculadora TAF';
     default:
-      return 'prontoresposta';
+      return 'Pronto Resposta';
   }
 };
 
