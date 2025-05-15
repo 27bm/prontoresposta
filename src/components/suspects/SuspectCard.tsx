@@ -62,7 +62,7 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
           
           <div className="flex-1">
             <div className="flex items-center">
-              <h3 className="text-lg font-bold">{suspect.name}</h3>
+              <h3 className="text-lg font-bold text-gray-800">{suspect.name}</h3>
               <button 
                 onClick={() => handleCopyText(suspect.name, "Nome")}
                 className="ml-2 p-1 text-gray-500 hover:text-gray-700"
@@ -72,7 +72,7 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
               </button>
             </div>
             
-            <div className="text-sm text-gray-600 space-y-1 mt-1">
+            <div className="text-sm text-gray-700 space-y-1 mt-1">
               {suspect.nickname && (
                 <p><span className="font-medium">Apelido:</span> {suspect.nickname}</p>
               )}
@@ -106,7 +106,7 @@ export function SuspectCard({ suspect, onEdit, onDelete }: SuspectCardProps) {
             </div>
             
             {suspect.observations && (
-              <p className="text-sm mt-2 bg-gray-50 p-2 rounded-md">
+              <p className="text-sm mt-2 bg-gray-50 p-2 rounded-md text-gray-700">
                 <span className="font-medium">Observações:</span> {suspect.observations}
               </p>
             )}

@@ -29,7 +29,7 @@ export function TokenDialog({
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4 p-4">
           <div className="space-y-2">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-700">
               Informe um token para acessar uma lista de suspeitos existente. Se o token não existir, uma nova lista será criada.
             </p>
             <Input 
@@ -37,7 +37,7 @@ export function TokenDialog({
               onChange={(e) => setTokenInput(e.target.value)} 
               placeholder="Digite o token de acesso"
               required
-              className="border-gray-300 focus:border-police-blue"
+              className="border-gray-300 focus:border-police-blue text-gray-800"
             />
           </div>
           <div className="flex justify-end pt-4">

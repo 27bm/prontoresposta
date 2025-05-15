@@ -21,7 +21,7 @@
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 215 16% 40%;
 
     --accent: 210 40% 96%;
     --accent-foreground: 222 47% 11%;
@@ -53,7 +53,7 @@
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 20% 75%;
 
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
@@ -76,3 +76,4 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+

@@ -23,18 +23,18 @@ export function TafResultCard({ result }: TafResultCardProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold">Resultado Final</h3>
+        <h3 className="text-2xl font-bold text-gray-800">Resultado Final</h3>
         <div className="mt-2 inline-flex items-center px-4 py-2 rounded-full text-white font-medium text-lg" style={{ backgroundColor: getResultColor() }}>
           {getTafResultTypeText(result.resultType)}
         </div>
-        <p className="text-3xl font-bold mt-2">{result.totalScore} pontos</p>
+        <p className="text-3xl font-bold mt-2 text-gray-800">{result.totalScore} pontos</p>
       </div>
       
       <Card>
         <CardContent className="p-6">
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">Classificação:</h4>
-            <ul className="space-y-1 text-sm">
+            <h4 className="font-semibold mb-2 text-gray-800">Classificação:</h4>
+            <ul className="space-y-1 text-sm text-gray-700">
               <li><span className="font-medium">Excelente:</span> 300 pontos</li>
               <li><span className="font-medium">Muito Bom:</span> 255 a 299 pontos</li>
               <li><span className="font-medium">Bom:</span> 211 a 254 pontos</li>

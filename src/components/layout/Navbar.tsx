@@ -50,7 +50,7 @@ export function Navbar() {
               "flex flex-col items-center justify-center py-2 text-center transition-all relative",
               location.pathname === item.path && !item.external
                 ? "text-police-blue font-medium"
-                : "text-gray-500 hover:text-police-lightBlue"
+                : "text-gray-600 hover:text-police-lightBlue"
             )}
             onClick={(e) => handleNavigation(item, e)}
           >

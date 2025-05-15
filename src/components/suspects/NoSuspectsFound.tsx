@@ -20,7 +20,7 @@ export function NoSuspectsFound({
 }: NoSuspectsFoundProps) {
   return (
     <div className="text-center py-10">
-      <p className="text-gray-500">
+      <p className="text-gray-700">
         {listToken ? (
           activeNeighborhood && activeGrupo ? (
             `Nenhum suspeito encontrado no bairro: ${activeNeighborhood} e grupo: ${activeGrupo}`
